@@ -2592,19 +2592,17 @@ LPH_NO_VIRTUALIZE(function()
 				}, var_155_12:slider("\f<p>Freeze cooldown\f<z>frz", 0, 1000, 1, true, "t"))
 			}, true
 		end)
-		var_155_11[#var_155_11 + 1] = var_155_12:label("\n")
-		var_155_11[#var_155_11 + 1] = var_155_12:label("\vOther")
+		var_155_11[#var_155_11 + 1] = var_155_5.other:label("\vOther")
 		var_155_11.dmethod = var_155_6({
 			var_155_8,
 			"dmethod"
-		}, var_155_12:combobox("Delay method\f<z>", {
-			"Default",
-			"Ways"
+		}, var_155_5.other:combobox("Delay method\f<z>", {
+			"Default"
 		}))
 		var_155_11.dswitch = var_155_6({
 			var_155_8,
 			"dswitch"
-		}, var_155_12:multiselect("\f<p>Delay switch\f<z>ds", {
+		}, var_155_5.other:multiselect("\f<p>Delay switch\f<z>ds", {
 			"Disable on Fakelags",
 			"Fluctuate",
 			"Hold ticks"
@@ -2612,23 +2610,17 @@ LPH_NO_VIRTUALIZE(function()
 		var_155_11.delay = var_155_6({
 			var_155_8,
 			"delay"
-		}, var_155_12:slider("Delay\f<z>", 1, 16, 1, true, "t", 1, var_155_7.delay)):depend({
-			var_155_11.dmethod,
-			"Default"
-		})
+		}, var_155_5.other:slider("Delay\f<z>", 1, 16, 1, true, "t", 1, var_155_7.delay))
 		var_155_11.random = var_155_6({
 			var_155_8,
 			"random"
-		}, var_155_12:slider("\f<p>Random delay\f<z>rd", 0, 22, 0, true, "t", 1, {
+		}, var_155_5.other:slider("\f<p>Random delay\f<z>rd", 0, 22, 0, true, "t", 1, {
 			[0] = "Off"
-		})):depend({
-			var_155_11.dmethod,
-			"Default"
-		})
+		}))
 		var_155_11.fluc = var_155_6({
 			var_155_8,
 			"fluc"
-		}, var_155_12:slider("\f<p>Fluctuate\f<z>fl", 1, 12, 1, true)):depend({
+		}, var_155_5.other:slider("\f<p>Fluctuate\f<z>fl", 1, 12, 1, true)):depend({
 			var_155_11.dswitch,
 			function(arg_fl_0)
 				return arg_fl_0:get("Fluctuate")
@@ -2637,7 +2629,7 @@ LPH_NO_VIRTUALIZE(function()
 		var_155_11.hold = var_155_6({
 			var_155_8,
 			"hold"
-		}, var_155_12:slider("\f<p>Hold ticks\f<z>hd", 0, 14, 0, true, "t", 1, {
+		}, var_155_5.other:slider("\f<p>Hold ticks\f<z>hd", 0, 14, 0, true, "t", 1, {
 			[0] = "Off"
 		})):depend({
 			var_155_11.dswitch,
@@ -2645,29 +2637,6 @@ LPH_NO_VIRTUALIZE(function()
 				return arg_hd_0:get("Hold ticks")
 			end
 		})
-		var_155_11.ways = var_155_6({
-			var_155_8,
-			"ways"
-		}, var_155_12:slider("\f<p>Ways\f<z>wy", 3, 10, 3, true, "w")):depend({
-			var_155_11.dmethod,
-			"Ways"
-		})
-
-		for iter_wd_0 = 1, 10 do
-			var_155_11["waydel" .. iter_wd_0] = var_155_6({
-				var_155_8,
-				"waydel",
-				iter_wd_0
-			}, var_155_12:slider("\f<p>Offset " .. iter_wd_0 .. "\f<z>wd" .. iter_wd_0, 1, 16, 1, true, "t")):depend({
-				var_155_11.dmethod,
-				"Ways"
-			}):depend({
-				var_155_11.ways,
-				function(arg_wd_0)
-					return arg_wd_0.value >= iter_wd_0
-				end
-			})
-		end
 
 		var_0_44.traverse(var_155_11, function(arg_181_0, arg_181_1)
 			arg_181_0:depend({
@@ -4544,7 +4513,6 @@ LPH_JIT_MAX(function()
 	}
 	local var_221_18
 	local var_221_19 = 0
-	local var_221_wayidx = 1
 	local var_221_freeze = {
 		frozen = false,
 		until_tick = 0,
@@ -4579,10 +4547,6 @@ LPH_JIT_MAX(function()
 		local var_ed_2 = var_ed_0.dswitch
 		local var_ed_1 = var_ed_0.delay or 1
 
-		if var_ed_0.dmethod == "Ways" and var_ed_0.waydel then
-			var_ed_1 = var_ed_0.waydel[var_221_wayidx] or var_ed_1
-		end
-
 		if var_ed_has(var_ed_2, "Disable on Fakelags") and var_0_38.chokedcommands() > 0 then
 			return 1
 		end
@@ -4591,7 +4555,7 @@ LPH_JIT_MAX(function()
 			return 1
 		end
 
-		if var_ed_0.dmethod ~= "Ways" and var_ed_0.random and var_ed_0.random > 0 then
+		if var_ed_0.random and var_ed_0.random > 0 then
 			var_ed_1 = var_0_34.random_int(var_0_31.min(var_ed_1, var_ed_0.random), var_0_31.max(var_ed_1, var_ed_0.random))
 		end
 
@@ -4620,10 +4584,6 @@ LPH_JIT_MAX(function()
 				var_221_2.counter = var_221_2.counter >= 65535 and 0 or var_221_2.counter + 1
 				var_221_2.switch = var_221_2.counter % 2 == 0
 				var_221_19 = 0
-
-				if var_221_1.cur and var_221_1.cur.dmethod == "Ways" then
-					var_221_wayidx = var_221_wayidx % var_0_31.max(2, var_221_1.cur.ways or 2) + 1
-				end
 
 				if var_276_cfg and var_276_cfg.on and var_276_cfg.chance > 0 and var_276_cfg.time > 0 then
 					local var_276_tc = var_0_38.tickcount()
