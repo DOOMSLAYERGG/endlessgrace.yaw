@@ -372,23 +372,23 @@ local var_0_65 = {
 	build = "stable",
 	level = 0,
 	user = _USER_NAME or var_0_2 and "admin" or "user",
-	script = _SCRIPT_NAME or var_0_2 and "hysteria • debug" or "hysteria • beta",
+	script = _SCRIPT_NAME or var_0_2 and "endlessgrace • debug" or "endlessgrace • beta",
 	version = var_0_1
 }
 local var_0_66 = {
-	hysteria = {
+	endlessgrace = {
 		1,
 		"stable"
 	},
-	["hysteria • bliss"] = {
+	["endlessgrace • bliss"] = {
 		2,
 		"bliss"
 	},
-	["hysteria • beta"] = {
+	["endlessgrace • beta"] = {
 		3,
 		"beta"
 	},
-	["hysteria • debug"] = {
+	["endlessgrace • debug"] = {
 		4,
 		"debug"
 	}
@@ -621,7 +621,7 @@ LPH_NO_VIRTUALIZE(function()
 	end
 
 	function var_0_57(...)
-		var_0_86("\vhysteria\r ", ...)
+		var_0_86("\vendlessgrace\r ", ...)
 	end
 end)()
 
@@ -2024,13 +2024,13 @@ LPH_NO_VIRTUALIZE(function()
 		fakelag = var_0_44.group("AA", "Fake lag")
 	}
 
-	var_0_44.macros.hysteria = "\a74A6A9FF"
+	var_0_44.macros.endlessgrace = "\a74A6A9FF"
 	var_0_44.macros.dot = "\v•\r  "
 	var_0_44.macros.p = "\aCDCDCD50—  \r"
 	var_0_44.macros.silent = "\aCDCDCD50"
 	var_0_44.macros.insecure = "\aB6B665FF"
 	var_0_128 = {
-		title = var_155_5.fakelag:label("hysteria"),
+		title = var_155_5.fakelag:label("endlessgrace"),
 		selector = var_155_5.fakelag:combobox("\nawselector", var_0_30.distribute(var_155_4.tabs, 2, nil)),
 		var_155_4.header(var_155_5.fakelag),
 		home = {
@@ -2049,7 +2049,7 @@ LPH_NO_VIRTUALIZE(function()
 				}),
 				selected = var_155_5.angles:label("Selected: \vDefault"),
 				list_report = var_155_5.angles:label("REPORT"),
-				load = var_155_5.angles:button("\f<hysteria>Load"),
+				load = var_155_5.angles:button("\f<endlessgrace>Load"),
 				loadaa = var_155_5.angles:button("Load AA only"),
 				save = var_155_5.angles:button("Save"),
 				export = var_155_5.angles:button("Export"),
@@ -2192,7 +2192,7 @@ LPH_NO_VIRTUALIZE(function()
 				var_155_4.header(var_155_5.angles, "General"),
 				mode = var_155_5.angles:combobox("Anti-aim operator", {
 					"gamesense",
-					"hysteria"
+					"endlessgrace"
 				}),
 				invert = var_155_5.angles:hotkey("Inverter", false, 0),
 				edge = var_155_5.angles:hotkey("Edge yaw", false, 0),
@@ -2232,7 +2232,7 @@ LPH_NO_VIRTUALIZE(function()
 			state = {
 				var_155_4.header(var_155_5.fakelag, "States builder"),
 				selector = var_155_5.fakelag:combobox("\nstateselector", var_0_30.distribute(var_0_108.states, 2), nil, false),
-				export = var_155_5.fakelag:button("\f<hysteria>Export state"),
+				export = var_155_5.fakelag:button("\f<endlessgrace>Export state"),
 				import = var_155_5.fakelag:button("Import state"),
 				var_155_4.header(var_155_5.fakelag)
 			},
@@ -2367,7 +2367,7 @@ LPH_NO_VIRTUALIZE(function()
 					"l"
 				}, var_155_12:slider("\f<p>Left / right\f<z>des", 0, 60, 60, true, "°")):depend({
 					var_0_127.antiaim.general.mode,
-					"hysteria"
+					"endlessgrace"
 				}),
 				r = var_155_6({
 					var_155_8,
@@ -2375,7 +2375,7 @@ LPH_NO_VIRTUALIZE(function()
 					"r"
 				}, var_155_12:slider("\ndesright\f<z>", 0, 60, 60, true, "°")):depend({
 					var_0_127.antiaim.general.mode,
-					"hysteria"
+					"endlessgrace"
 				})
 			}, true
 		end)
@@ -2885,7 +2885,7 @@ LPH_NO_VIRTUALIZE(function()
 
 	local var_155_22 = {}
 
-	for iter_155_8 in var_0_32.gmatch("hysteria", ".[\x80-\xBF]*") do
+	for iter_155_8 in var_0_32.gmatch("endlessgrace", ".[\x80-\xBF]*") do
 		var_155_22[#var_155_22 + 1] = {
 			n = 0,
 			d = false,
@@ -2946,7 +2946,7 @@ local var_0_129
 
 LPH_NO_VIRTUALIZE(function()
 	var_0_129 = {
-		default = "hysteria::GS::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ZGWmU3RhdGljpXNwZWVkFKR0aW1lDaJzZMKib26nRGVmYXVsdKN5YXeFpWRlbGF5AKNhbmfMtKJvbsKkbW9kZaZTdGF0aWOlc3BlZWQUp2RlZmF1bHSFpXBpdGNohaRhbmcy0KejYW5n0Keib27CpG1vZGWmU3RhdGljpXNwZWVkFKR0aW1lDaJzZMKib26mQ3VzdG9to3lhd4WlZGVsYXkAo2FuZ8y0om9uwqRtb2RlplN0YXRpY6VzcGVlZBSnZ2VuZXJhbIqjdXNlw6ZpbnZlcnSTAQChfqJmbIOlbGltaXQOpG1vZGWnRHluYW1pY6JvbsOkaGVhZIGib27Dpm1hbnVhbIWlcmlnaHSTAQChfqRsZWZ0kwEAoX6lcmVzZXSTAQChfqJvbsKmc3RhdGljwqRlZGdlkwEAoX6lam1vdmXDomZzg6Rvbl9okwEAoX6ib27CpnN0YXRpY8Kkc3RhYsOoaW1wbGljaXTCom9uw6NkZWaCpHNuYXCDom9zwqRvbl9okwAAoX6ib27DqHRyaWdnZXJzlKdKdW1waW5nqUNyb3VjaGluZ61XZWFwb24gY2hhbmdloX6kcmFnZYWocmVjaGFyZ2XDqGV4c3dpdGNogqVhbGxvd5GhfqJvbsKodGVsZXBvcnSEpG9uX2iTAQChfqZwaXN0b2zCom9uwqRsYW5kwqdwZWVrZml4wqhyZXNvbHZlcsJ9",
+		default = "endlessgrace::GS::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ZGWmU3RhdGljpXNwZWVkFKR0aW1lDaJzZMKib26nRGVmYXVsdKN5YXeFpWRlbGF5AKNhbmfMtKJvbsKkbW9kZaZTdGF0aWOlc3BlZWQUp2RlZmF1bHSFpXBpdGNohaRhbmcy0KejYW5n0Keib27CpG1vZGWmU3RhdGljpXNwZWVkFKR0aW1lDaJzZMKib26mQ3VzdG9to3lhd4WlZGVsYXkAo2FuZ8y0om9uwqRtb2RlplN0YXRpY6VzcGVlZBSnZ2VuZXJhbIqjdXNlw6ZpbnZlcnSTAQChfqJmbIOlbGltaXQOpG1vZGWnRHluYW1pY6JvbsOkaGVhZIGib27Dpm1hbnVhbIWlcmlnaHSTAQChfqRsZWZ0kwEAoX6lcmVzZXSTAQChfqJvbsKmc3RhdGljwqRlZGdlkwEAoX6lam1vdmXDomZzg6Rvbl9okwEAoX6ib27CpnN0YXRpY8Kkc3RhYsOoaW1wbGljaXTCom9uw6NkZWaCpHNuYXCDom9zwqRvbl9okwAAoX6ib27DqHRyaWdnZXJzlKdKdW1waW5nqUNyb3VjaGluZ61XZWFwb24gY2hhbmdloX6kcmFnZYWocmVjaGFyZ2XDqGV4c3dpdGNogqVhbGxvd5GhfqJvbsKodGVsZXBvcnSEpG9uX2iTAQChfqZwaXN0b2zCom9uwqRsYW5kwqdwZWVrZml4wqhyZXNvbHZlcsJ9",
 		name = "",
 		selected = 0,
 		badge = var_0_44.format("\v•\r "),
@@ -2986,7 +2986,7 @@ LPH_NO_VIRTUALIZE(function()
 				return "\fConfig not found."
 			end
 
-			local var_199_0, var_199_1, var_199_2 = var_0_32.match(arg_199_0, "^hysteria::(%a+)::([%w%+%/]+)(_*)")
+			local var_199_0, var_199_1, var_199_2 = var_0_32.match(arg_199_0, "^endlessgrace::(%a+)::([%w%+%/]+)(_*)")
 
 			if var_199_0 ~= "GS" then
 				return "\fNot for gamesense"
@@ -3030,7 +3030,7 @@ LPH_NO_VIRTUALIZE(function()
 			["/"] = "z143Z",
 			["+"] = "z113Z"
 		})
-		local var_200_6 = var_0_32.format("hysteria::GS::%s", var_200_5)
+		local var_200_6 = var_0_32.format("endlessgrace::GS::%s", var_200_5)
 
 		var_0_88.configs[arg_200_0] = var_200_6
 
@@ -3078,7 +3078,7 @@ LPH_NO_VIRTUALIZE(function()
 			return var_204_1
 		end
 
-		local var_204_4 = var_204_0:match("^hysteria::%a+::[%w%+%/]+_*")
+		local var_204_4 = var_204_0:match("^endlessgrace::%a+::[%w%+%/]+_*")
 
 		if var_204_1 == "Default" then
 			return "\fCan't import default config"
@@ -4298,17 +4298,17 @@ LPH_NO_VIRTUALIZE(function()
 		list = {
 			"Я ЛОХ",
 			"GOVNO.LUA",
-			"HYSTERIA CUSTOM",
-			"HYSTERIA CUSTOM",
-			"HYSTERIA CUSTOM",
+			"ENDLESSGRACE CUSTOM",
+			"ENDLESSGRACE CUSTOM",
+			"ENDLESSGRACE CUSTOM",
 			"HYISTERIA",
 			"CUSTOM",
 			"Я ЛОХ",
 			"gondon",
 			"gondon",
-			"HYSTERIA 2.1488",
-			"HYSTERIA 2.1488",
-			"HYSTERIA",
+			"ENDLESSGRACE 2.1488",
+			"ENDLESSGRACE 2.1488",
+			"ENDLESSGRACE",
 			"CUSTOM",
 			"gondonio"
 		},
@@ -4428,7 +4428,7 @@ LPH_NO_VIRTUALIZE(function()
 		callback = function(arg_293_0)
 			var_0_34.delay_call(0, function()
 				cvar.con_filter_enable:set_int(arg_293_0.value and 1 or 0)
-				cvar.con_filter_text:set_string(arg_293_0.value and "hysteria" or "")
+				cvar.con_filter_text:set_string(arg_293_0.value and "endlessgrace" or "")
 			end)
 		end,
 		run = function(arg_295_0)
@@ -5685,7 +5685,7 @@ LPH_NO_VIRTUALIZE(function()
 			0,
 			function(arg_359_0, arg_359_1, arg_359_2)
 				local var_359_0 = var_0_127.visuals.crosshair.logo.value
-				local var_359_1 = "HYSTERIA" .. (not var_359_0 and var_0_67 > 1 and var_0_91.hexs .. var_0_32.format("%02x", var_0_99.get_alpha() * 255) .. var_0_32.upper(var_0_65.build) or "")
+				local var_359_1 = "ENDLESSGRACE" .. (not var_359_0 and var_0_67 > 1 and var_0_91.hexs .. var_0_32.format("%02x", var_0_99.get_alpha() * 255) .. var_0_32.upper(var_0_65.build) or "")
 				local var_359_2, var_359_3 = var_0_99.measure_text("-", var_359_1)
 
 				if var_0_127.visuals.crosshair.logo.value then
