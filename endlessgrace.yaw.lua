@@ -2601,10 +2601,18 @@ LPH_NO_VIRTUALIZE(function()
 			"Default",
 			"Ways"
 		}))
+		var_155_11.dswitch = var_155_6({
+			var_155_8,
+			"dswitch"
+		}, var_155_12:multiselect("\f<p>Delay switch\f<z>ds", {
+			"Disable on Fakelags",
+			"Fluctuate",
+			"Hold ticks"
+		}))
 		var_155_11.delay = var_155_6({
 			var_155_8,
 			"delay"
-		}, var_155_12:slider("Delay\f<z>", 1, 16, 0, true, "t", 1, var_155_7.delay)):depend({
+		}, var_155_12:slider("Delay\f<z>", 1, 16, 1, true, "t", 1, var_155_7.delay)):depend({
 			var_155_11.dmethod,
 			"Default"
 		})
@@ -2620,28 +2628,37 @@ LPH_NO_VIRTUALIZE(function()
 		var_155_11.fluc = var_155_6({
 			var_155_8,
 			"fluc"
-		}, var_155_12:slider("\f<p>Fluctuate\f<z>fl", 0, 12, 0, true, "t", 1, {
-			[0] = "Off"
-		}))
+		}, var_155_12:slider("\f<p>Fluctuate\f<z>fl", 1, 12, 1, true)):depend({
+			var_155_11.dswitch,
+			function(arg_fl_0)
+				return arg_fl_0:get("Fluctuate")
+			end
+		})
 		var_155_11.hold = var_155_6({
 			var_155_8,
 			"hold"
 		}, var_155_12:slider("\f<p>Hold ticks\f<z>hd", 0, 14, 0, true, "t", 1, {
 			[0] = "Off"
-		}))
+		})):depend({
+			var_155_11.dswitch,
+			function(arg_hd_0)
+				return arg_hd_0:get("Hold ticks")
+			end
+		})
 		var_155_11.ways = var_155_6({
 			var_155_8,
 			"ways"
-		}, var_155_12:slider("\f<p>Ways\f<z>wy", 2, 6, 3)):depend({
+		}, var_155_12:slider("\f<p>Ways\f<z>wy", 3, 10, 3, true, "w")):depend({
 			var_155_11.dmethod,
 			"Ways"
 		})
-		for iter_wd_0 = 1, 6 do
+
+		for iter_wd_0 = 1, 10 do
 			var_155_11["waydel" .. iter_wd_0] = var_155_6({
 				var_155_8,
 				"waydel",
 				iter_wd_0
-			}, var_155_12:slider("\f<p>Way " .. iter_wd_0 .. "\f<z>wd" .. iter_wd_0, 1, 16, 1, true, "t")):depend({
+			}, var_155_12:slider("\f<p>Offset " .. iter_wd_0 .. "\f<z>wd" .. iter_wd_0, 1, 16, 1, true, "t")):depend({
 				var_155_11.dmethod,
 				"Ways"
 			}):depend({
@@ -4541,13 +4558,36 @@ LPH_JIT_MAX(function()
 			return 1
 		end
 
+		local function var_ed_has(arg_eh_0, arg_eh_1)
+			if var_0_24(arg_eh_0) ~= "table" then
+				return false
+			end
+
+			if arg_eh_0[arg_eh_1] then
+				return true
+			end
+
+			for iter_eh_0, iter_eh_1 in var_0_10(arg_eh_0) do
+				if iter_eh_1 == arg_eh_1 then
+					return true
+				end
+			end
+
+			return false
+		end
+
+		local var_ed_2 = var_ed_0.dswitch
 		local var_ed_1 = var_ed_0.delay or 1
 
 		if var_ed_0.dmethod == "Ways" and var_ed_0.waydel then
 			var_ed_1 = var_ed_0.waydel[var_221_wayidx] or var_ed_1
 		end
 
-		if var_ed_0.hold and var_ed_0.hold > 0 and var_0_38.tickcount() % 50 > var_ed_0.hold * 4 then
+		if var_ed_has(var_ed_2, "Disable on Fakelags") and var_0_38.chokedcommands() > 0 then
+			return 1
+		end
+
+		if var_ed_has(var_ed_2, "Hold ticks") and var_ed_0.hold and var_ed_0.hold > 0 and var_0_38.tickcount() % 50 > var_ed_0.hold * 4 then
 			return 1
 		end
 
@@ -4555,7 +4595,7 @@ LPH_JIT_MAX(function()
 			var_ed_1 = var_0_34.random_int(var_0_31.min(var_ed_1, var_ed_0.random), var_0_31.max(var_ed_1, var_ed_0.random))
 		end
 
-		if var_ed_0.fluc and var_ed_0.fluc > 0 then
+		if var_ed_has(var_ed_2, "Fluctuate") and var_ed_0.fluc and var_ed_0.fluc > 0 then
 			var_ed_1 = var_ed_1 + var_0_31.floor(var_0_31.sin(var_0_38.tickcount() / var_0_31.max(1, var_ed_0.fluc)) * var_ed_0.fluc * 0.5)
 		end
 
