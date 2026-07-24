@@ -2313,6 +2313,12 @@ LPH_NO_VIRTUALIZE(function()
 				return {
 					ratio = var_155_5.angles:slider("\f<p>Ratio", 0, 199, 100, true, "", 1, var_155_aspect)
 				}, true
+			end),
+			thirdperson = var_155_4.feature(var_155_5.angles:checkbox("Third person"), function()
+				return {
+					dist = var_155_5.angles:slider("\f<p>Distance", 0, 250, 100, true),
+					wall = var_155_5.angles:checkbox("\f<p>Wall threshold")
+				}, true
 			end)
 		},
 		antiaim = {
@@ -4747,6 +4753,79 @@ LPH_NO_VIRTUALIZE(function()
 			var_0_127.misc.aspect.ratio:set_callback(arg_asp_0.apply, true)
 			var_0_78.shutdown:set(function()
 				cvar.r_aspectratio:set_float(0)
+			end)
+		end
+	}
+	var_282_0.thirdperson = {
+		ref = var_0_44.reference("VISUALS", "Effects", "Force third person (alive)"),
+		smooth = 100,
+		wall_distance = function(arg_tp_0)
+			if not var_0_113.valid then
+				return arg_tp_0, false
+			end
+
+			local var_w0, var_w1, var_w2 = var_0_36.get_origin(var_0_113.self)
+
+			if not var_w2 then
+				return arg_tp_0, false
+			end
+
+			local var_w3, var_w4 = var_0_34.camera_angles()
+			local var_w5 = var_w4 * var_0_31.deginrad
+			local var_w6 = var_w2 + 64
+			local var_w7 = var_0_34.trace_line(var_0_113.self, var_w0, var_w1, var_w6, var_w0 - var_0_31.cos(var_w5) * arg_tp_0, var_w1 - var_0_31.sin(var_w5) * arg_tp_0, var_w6)
+
+			if var_w7 < 1 then
+				return var_0_31.max(var_w7 * arg_tp_0 - 20, 0), true
+			end
+
+			return arg_tp_0, false
+		end,
+		work = function(arg_tp_1)
+			local var_tw0 = var_0_127.misc.thirdperson.on:get()
+			local var_tw1 = var_0_127.misc.thirdperson.dist:get()
+			local var_tw2 = var_tw1
+			local var_tw3 = 0.07
+
+			if var_tw0 and var_0_113.valid then
+				if var_0_127.misc.thirdperson.wall:get() then
+					local var_tw4, var_tw5 = arg_tp_1.wall_distance(var_tw1)
+
+					if var_tw5 and var_tw4 < 15 then
+						var_tw2, var_tw3 = 0, 2
+
+						arg_tp_1.ref:override(false)
+					else
+						var_tw2 = var_0_31.min(var_tw1, var_tw4)
+
+						arg_tp_1.ref:override(true)
+					end
+				else
+					arg_tp_1.ref:override(true)
+				end
+			else
+				var_tw2 = 100
+
+				arg_tp_1.ref:override()
+			end
+
+			local var_tw6 = var_0_31.clamp(var_0_38.frametime() * var_tw3 * 175, 0.01, 1)
+
+			arg_tp_1.smooth = var_0_31.clamp(arg_tp_1.smooth + (var_tw2 - arg_tp_1.smooth) * var_tw6, 0, 250)
+
+			if not (var_tw0 and var_0_113.valid) and var_0_31.abs(arg_tp_1.smooth - 100) < 0.5 then
+				return
+			end
+
+			cvar.c_mindistance:set_float(arg_tp_1.smooth)
+			cvar.c_maxdistance:set_float(arg_tp_1.smooth)
+		end,
+		run = function(arg_tp_2)
+			var_0_78.paint_ui:set(function()
+				arg_tp_2.work(arg_tp_2)
+			end)
+			var_0_3(function()
+				arg_tp_2.ref:override()
 			end)
 		end
 	}
