@@ -2986,7 +2986,7 @@ LPH_NO_VIRTUALIZE(function()
 				return "\fConfig not found."
 			end
 
-			local var_199_0, var_199_1, var_199_2 = var_0_32.match(arg_199_0, "^endlessgrace::(%a+)::([%w%+%/]+)(_*)")
+			local var_199_0, var_199_1, var_199_2 = var_0_32.match(arg_199_0, "^%a+::(%a+)::([%w%+%/]+)(_*)")
 
 			if var_199_0 ~= "GS" then
 				return "\fNot for gamesense"
@@ -3078,7 +3078,7 @@ LPH_NO_VIRTUALIZE(function()
 			return var_204_1
 		end
 
-		local var_204_4 = var_204_0:match("^endlessgrace::%a+::[%w%+%/]+_*")
+		local var_204_4 = var_204_0:match("^%a+::%a+::[%w%+%/]+_*")
 
 		if var_204_1 == "Default" then
 			return "\fCan't import default config"
