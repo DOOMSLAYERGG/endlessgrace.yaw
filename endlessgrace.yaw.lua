@@ -2230,11 +2230,11 @@ LPH_NO_VIRTUALIZE(function()
 				end)
 			},
 			state = {
-				var_155_4.header(var_155_5.angles, "States builder"),
-				selector = var_155_5.angles:combobox("\nstateselector", var_0_30.distribute(var_0_108.states, 2), nil, false),
-				export = var_155_5.angles:button("\f<hysteria>Export state"),
-				import = var_155_5.angles:button("Import state"),
-				var_155_4.header(var_155_5.angles)
+				var_155_4.header(var_155_5.fakelag, "States builder"),
+				selector = var_155_5.fakelag:combobox("\nstateselector", var_0_30.distribute(var_0_108.states, 2), nil, false),
+				export = var_155_5.fakelag:button("\f<hysteria>Export state"),
+				import = var_155_5.fakelag:button("Import state"),
+				var_155_4.header(var_155_5.fakelag)
 			},
 			builder = {},
 			def = {
