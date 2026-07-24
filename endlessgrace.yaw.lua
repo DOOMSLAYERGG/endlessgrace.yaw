@@ -2220,10 +2220,12 @@ LPH_NO_VIRTUALIZE(function()
 		rage = {
 			var_155_4.header(var_155_5.angles, "Ragebot"),
 			jumpscout = var_155_5.angles:checkbox("Jump scout helper"),
-			aimhelper = var_155_5.angles:checkbox("Aimbot helper"),
-			var_155_5.angles:label("\f<p>Prefers safe point / body aim while enabled"),
-			ideal = var_155_5.angles:checkbox("Ideal tick", 0),
-			var_155_5.angles:label("\f<p>Forces Double tap + Auto peek while enabled"),
+			aimhelper = var_155_4.feature(var_155_5.angles:checkbox("Aimbot helper"), function()
+				return {
+					var_155_5.angles:label("\f<p>Prefers safe point /"),
+					var_155_5.angles:label("\f<p>body aim while enabled")
+				}, true
+			end),
 			dynhc = var_155_4.feature(var_155_5.angles:checkbox("Dynamic hitchance"), function()
 				return {
 					mode = var_155_5.angles:combobox("\f<p>Curve", {
@@ -5828,19 +5830,8 @@ LPH_NO_VIRTUALIZE(function()
 	var_282_12.helpers = {
 		sp_ovr = false,
 		hc_ovr = false,
-		ideal_ovr = false,
 		work = function()
-			local var_h_sp = var_0_127.rage.aimhelper.value == true
-			local var_h_ideal = var_0_127.rage.ideal.value == true
-
-			if var_h_ideal and var_0_127.rage.ideal.hotkey then
-				local var_ik_s, var_ik_m = var_0_127.rage.ideal.hotkey:get()
-
-				if var_ik_m ~= nil and var_ik_m ~= 0 then
-					var_h_ideal = var_ik_s and true or false
-				end
-			end
-
+			local var_h_sp = var_0_127.rage.aimhelper.on:get() == true
 			local var_h_hc
 
 			if var_0_113.valid and var_0_113.threat then
@@ -5873,18 +5864,6 @@ LPH_NO_VIRTUALIZE(function()
 				var_hp.sp_ovr = false
 			end
 
-			if var_h_ideal then
-				var_0_107.rage.aimbot.double_tap[1]:override(true)
-				var_0_107.rage.other.peek:override(true)
-
-				var_hp.ideal_ovr = true
-			elseif var_hp.ideal_ovr then
-				var_0_107.rage.aimbot.double_tap[1]:override()
-				var_0_107.rage.other.peek:override()
-
-				var_hp.ideal_ovr = false
-			end
-
 			if var_h_hc then
 				var_0_107.rage.aimbot.hit_chance:override(var_h_hc)
 
@@ -5901,8 +5880,6 @@ LPH_NO_VIRTUALIZE(function()
 			end)
 			var_0_78.shutdown:set(function()
 				var_0_107.rage.aimbot.force_sp:override()
-				var_0_107.rage.aimbot.double_tap[1]:override()
-				var_0_107.rage.other.peek:override()
 				var_0_107.rage.aimbot.hit_chance:override()
 			end)
 		end
