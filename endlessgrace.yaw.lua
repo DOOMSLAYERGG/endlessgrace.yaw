@@ -2377,15 +2377,66 @@ LPH_NO_VIRTUALIZE(function()
 				})
 			}, true
 		end)
-		var_155_11.bmode = var_155_6({
+		var_155_11.bmode = var_155_4.feature(var_155_6({
 			var_155_8,
-			"bmode"
-		}, var_155_12:combobox("Body yaw type\f<z>", {
+			"bmode",
+			"type"
+		}, var_155_12:combobox("Body yaw\f<z>bmode", {
 			"Default",
 			"Static",
 			"Jitter",
 			"Opposite"
-		}))
+		})), function()
+			local var_bd_type = var_155_6({
+				var_155_8,
+				"bmode",
+				"bd_type"
+			}, var_155_12:combobox("\f<p>Desync type\f<z>bd", {
+				"Gamesense",
+				"Advanced"
+			}))
+
+			return {
+				bd_type = var_bd_type,
+				body_type = var_155_6({
+					var_155_8,
+					"bmode",
+					"body_type"
+				}, var_155_12:combobox("\f<p>Type\f<z>bt", {
+					"Default",
+					"Spin",
+					"Fluctuate",
+					"Random",
+					"Dynamic"
+				})),
+				static = var_155_6({
+					var_155_8,
+					"bmode",
+					"static"
+				}, var_155_12:slider("\f<p>Amount\f<z>bs", -180, 180, 0, true, "°", 1)):depend({
+					var_bd_type,
+					"Gamesense"
+				}),
+				left = var_155_6({
+					var_155_8,
+					"bmode",
+					"left"
+				}, var_155_12:slider("\f<p>Left\f<z>bl", -180, 180, 0, true, "°", 1)):depend({
+					var_bd_type,
+					"Advanced"
+				}),
+				right = var_155_6({
+					var_155_8,
+					"bmode",
+					"right"
+				}, var_155_12:slider("\f<p>Right\f<z>br", -180, 180, 0, true, "°", 1)):depend({
+					var_bd_type,
+					"Advanced"
+				})
+			}, function(arg_bmode_0)
+				return arg_bmode_0.value ~= "Default"
+			end
+		end)
 		var_155_11.freeze = var_155_4.feature(var_155_6({
 			var_155_8,
 			"freeze",
@@ -3499,7 +3550,8 @@ LPH_JIT_MAX(function()
 					return
 				end
 
-				local var_238_1 = var_221_1.cur.bmode or "Default"
+				local var_238_b = var_221_1.cur.bmode
+				local var_238_1 = var_238_b and var_238_b.type or "Default"
 				local var_238_2
 
 				if var_238_1 == "Static" then
@@ -3516,7 +3568,33 @@ LPH_JIT_MAX(function()
 					var_238_2 = var_0_127.antiaim.general.invert:get()
 				end
 
-				var_221_3.des = var_238_2 and var_238_0.r or -var_238_0.l
+				if var_238_1 ~= "Default" and var_238_b then
+					local var_238_4
+
+					if var_238_b.bd_type == "Advanced" then
+						var_238_4 = var_238_2 and var_238_b.right or var_238_b.left
+					else
+						var_238_4 = var_238_2 and var_238_b.static or -var_238_b.static
+					end
+
+					local var_238_5 = var_238_b.body_type
+
+					if var_238_5 == "Spin" then
+						var_238_4 = var_238_4 * var_0_31.abs(var_0_31.sin(var_0_38.curtime() * 5))
+					elseif var_238_5 == "Fluctuate" then
+						var_238_4 = var_238_4 * (0.5 + 0.5 * var_0_31.sin((var_221_0.command_number or 0) * 0.1))
+					elseif var_238_5 == "Random" then
+						var_238_4 = var_238_4 >= 0 and var_0_34.random_int(0, var_238_4) or var_0_34.random_int(var_238_4, 0)
+					elseif var_238_5 == "Dynamic" then
+						local var_238_6 = var_0_31.min(var_0_113.velocity / 300, 1)
+
+						var_238_4 = var_238_4 * (1 - var_238_6)
+					end
+
+					var_221_3.des = var_238_4
+				else
+					var_221_3.des = var_238_2 and var_238_0.r or -var_238_0.l
+				end
 			end
 		},
 		defensive = {
