@@ -2221,7 +2221,9 @@ LPH_NO_VIRTUALIZE(function()
 			var_155_4.header(var_155_5.angles, "Ragebot"),
 			jumpscout = var_155_5.angles:checkbox("Jump scout helper"),
 			aimhelper = var_155_5.angles:checkbox("Aimbot helper"),
+			var_155_5.angles:label("\f<p>Prefers safe point / body aim while enabled"),
 			ideal = var_155_5.angles:checkbox("Ideal tick", 0),
+			var_155_5.angles:label("\f<p>Forces Double tap + Auto peek while enabled"),
 			dynhc = var_155_4.feature(var_155_5.angles:checkbox("Dynamic hitchance"), function()
 				return {
 					mode = var_155_5.angles:combobox("\f<p>Curve", {
@@ -5738,66 +5740,81 @@ LPH_NO_VIRTUALIZE(function()
 	var_282_12.helpers = {
 		sp_ovr = false,
 		hc_ovr = false,
+		ideal_ovr = false,
 		work = function()
-			local var_h_sp = false
+			local var_h_sp = var_0_127.rage.aimhelper.value == true
+			local var_h_ideal = var_0_127.rage.ideal.value == true
+
+			if var_h_ideal and var_0_127.rage.ideal.hotkey then
+				local var_ik_s, var_ik_m = var_0_127.rage.ideal.hotkey:get()
+
+				if var_ik_m ~= nil and var_ik_m ~= 0 then
+					var_h_ideal = var_ik_s and true or false
+				end
+			end
+
 			local var_h_hc
-
-			if var_0_127.rage.aimhelper.value then
-				var_h_sp = true
-			end
-
-			if var_0_33.is_active(var_0_127.rage.ideal) then
-				var_h_sp = true
-				var_h_hc = 100
-			end
 
 			if var_0_113.valid and var_0_113.threat then
 				local var_h_cn = var_0_113.weapon and var_0_36.get_classname(var_0_113.weapon)
 				local var_h_d = var_0_31.min(var_0_113.origin:dist(var_0_50(var_0_36.get_origin(var_0_113.threat))), 1350)
 
-				if var_h_hc == nil and var_0_127.rage.jumpscout.value and var_h_cn == "CWeaponSSG08" and var_0_36.get_prop(var_0_113.self, "m_bIsScoped") == 1 and not var_0_113.on_ground then
+				if var_0_127.rage.jumpscout.value and var_h_cn == "CWeaponSSG08" and var_0_36.get_prop(var_0_113.self, "m_bIsScoped") == 1 and not var_0_113.on_ground then
 					var_h_hc = var_0_31.round(55 - 22 * (var_h_d / 1350))
-				end
-
-				if var_h_hc == nil and var_0_127.rage.dynhc.on.value then
+				elseif var_0_127.rage.dynhc.on.value then
 					local var_h_close, var_h_far = var_dh_range(var_h_cn)
 					local var_h_t = var_h_d / 1350
-					local var_h_val
 
 					if var_0_127.rage.dynhc.mode.value == "Farther = higher" then
-						var_h_val = var_h_far + (var_h_close - var_h_far) * var_h_t
+						var_h_hc = var_0_31.round(var_h_far + (var_h_close - var_h_far) * var_h_t)
 					else
-						var_h_val = var_h_close - (var_h_close - var_h_far) * var_h_t
+						var_h_hc = var_0_31.round(var_h_close - (var_h_close - var_h_far) * var_h_t)
 					end
-
-					var_h_hc = var_0_31.round(var_h_val)
 				end
 			end
+
+			local var_hp = var_282_12.helpers
 
 			if var_h_sp then
 				var_0_107.rage.aimbot.force_sp:override(true)
 
-				var_282_12.helpers.sp_ovr = true
-			elseif var_282_12.helpers.sp_ovr then
+				var_hp.sp_ovr = true
+			elseif var_hp.sp_ovr then
 				var_0_107.rage.aimbot.force_sp:override()
 
-				var_282_12.helpers.sp_ovr = false
+				var_hp.sp_ovr = false
+			end
+
+			if var_h_ideal then
+				var_0_107.rage.aimbot.double_tap[1]:override(true)
+				var_0_107.rage.other.peek:override(true)
+
+				var_hp.ideal_ovr = true
+			elseif var_hp.ideal_ovr then
+				var_0_107.rage.aimbot.double_tap[1]:override()
+				var_0_107.rage.other.peek:override()
+
+				var_hp.ideal_ovr = false
 			end
 
 			if var_h_hc then
 				var_0_107.rage.aimbot.hit_chance:override(var_h_hc)
 
-				var_282_12.helpers.hc_ovr = true
-			elseif var_282_12.helpers.hc_ovr then
+				var_hp.hc_ovr = true
+			elseif var_hp.hc_ovr then
 				var_0_107.rage.aimbot.hit_chance:override()
 
-				var_282_12.helpers.hc_ovr = false
+				var_hp.hc_ovr = false
 			end
 		end,
 		run = function(arg_h1_0)
-			var_0_78.setup_command:set(arg_h1_0.work)
+			var_0_78.setup_command:set(function()
+				var_0_61(arg_h1_0.work)
+			end)
 			var_0_78.shutdown:set(function()
 				var_0_107.rage.aimbot.force_sp:override()
+				var_0_107.rage.aimbot.double_tap[1]:override()
+				var_0_107.rage.other.peek:override()
 				var_0_107.rage.aimbot.hit_chance:override()
 			end)
 		end
