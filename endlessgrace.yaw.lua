@@ -2123,6 +2123,36 @@ LPH_NO_VIRTUALIZE(function()
 		fakelag = var_0_44.group("AA", "Fake lag")
 	}
 
+	local var_155_aspect = {}
+
+	do
+		local var_asp_w, var_asp_h = var_0_34.screen_size()
+
+		local function var_asp_gcd(arg_g0, arg_g1)
+			while arg_g0 ~= 0 do
+				arg_g0, arg_g1 = var_0_31.fmod(arg_g1, arg_g0), arg_g0
+			end
+
+			return arg_g1
+		end
+
+		for iter_asp = 0, 199 do
+			local var_asp_f = 2 - iter_asp * 0.01
+			local var_asp_d = var_asp_gcd(var_0_31.round(var_asp_w * var_asp_f), var_asp_h)
+
+			if var_asp_d and var_asp_d ~= 0 then
+				local var_asp_a = var_0_31.round(var_asp_w * var_asp_f / var_asp_d)
+				local var_asp_b = var_0_31.round(var_asp_h / var_asp_d)
+
+				if var_asp_a > 0 and var_asp_a < 100 and var_asp_b > 0 and var_asp_b < 100 then
+					var_155_aspect[iter_asp] = var_asp_a .. ":" .. var_asp_b
+				end
+			end
+		end
+
+		var_155_aspect[100] = "Native"
+	end
+
 	var_0_44.macros.endlessgrace = "\a74A6A9FF"
 	var_0_44.macros.dot = "\v•\r  "
 	var_0_44.macros.p = "\aCDCDCD50—  \r"
@@ -2277,6 +2307,11 @@ LPH_NO_VIRTUALIZE(function()
 						"Jitter",
 						"No step back"
 					})
+				}, true
+			end),
+			aspect = var_155_4.feature(var_155_5.angles:checkbox("Aspect ratio"), function()
+				return {
+					ratio = var_155_5.angles:slider("\f<p>Ratio", 0, 199, 100, true, "", 1, var_155_aspect)
 				}, true
 			end)
 		},
@@ -4690,6 +4725,28 @@ LPH_NO_VIRTUALIZE(function()
 			var_0_78.shutdown:set(function()
 				cvar.con_filter_enable:set_int(0)
 				cvar.con_filter_text:set_string("")
+			end)
+		end
+	}
+	var_282_0.aspect = {
+		apply = function()
+			if not var_0_127.misc.aspect.on:get() then
+				cvar.r_aspectratio:set_float(0)
+
+				return
+			end
+
+			local var_asp_w, var_asp_h = var_0_34.screen_size()
+			local var_asp_f = 2 - var_0_127.misc.aspect.ratio:get() * 0.01
+			local var_asp_v = var_asp_f == 1 and 0 or var_asp_w * var_asp_f / var_asp_h
+
+			cvar.r_aspectratio:set_float(var_asp_v)
+		end,
+		run = function(arg_asp_0)
+			var_0_127.misc.aspect.on:set_callback(arg_asp_0.apply, true)
+			var_0_127.misc.aspect.ratio:set_callback(arg_asp_0.apply, true)
+			var_0_78.shutdown:set(function()
+				cvar.r_aspectratio:set_float(0)
 			end)
 		end
 	}
