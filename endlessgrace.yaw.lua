@@ -416,6 +416,10 @@ end)
 
 var_0_69.create_directory = var_0_28(var_0_70, var_0_71, 22, "void (__thiscall*)(void*, const char*, const char*)")
 
+var_0_61(function()
+	var_0_69.create_directory("endlessgrace.yaw", "ROOT_PATH")
+end)
+
 function var_0_69.write(arg_47_0, arg_47_1)
 	local var_47_0 = var_0_75(arg_47_0, "wb", "ROOT_PATH")
 
