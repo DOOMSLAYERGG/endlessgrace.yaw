@@ -416,8 +416,13 @@ end)
 
 var_0_69.create_directory = var_0_28(var_0_70, var_0_71, 22, "void (__thiscall*)(void*, const char*, const char*)")
 
+var_0_69.presets_path = "endlessgrace.yaw\\presets"
+var_0_69.content_path = "endlessgrace.yaw\\content"
+
 var_0_61(function()
 	var_0_69.create_directory("endlessgrace.yaw", "ROOT_PATH")
+	var_0_69.create_directory(var_0_69.presets_path, "ROOT_PATH")
+	var_0_69.create_directory(var_0_69.content_path, "ROOT_PATH")
 end)
 
 function var_0_69.write(arg_47_0, arg_47_1)
@@ -3038,6 +3043,10 @@ LPH_NO_VIRTUALIZE(function()
 
 		var_0_88.configs[arg_200_0] = var_200_6
 
+		var_0_61(function()
+			var_0_69.write(var_0_69.presets_path .. "\\" .. arg_200_0 .. ".cfg", var_200_6)
+		end)
+
 		return "\a" .. arg_200_0 .. " saved"
 	end
 
@@ -3089,6 +3098,10 @@ LPH_NO_VIRTUALIZE(function()
 		end
 
 		var_0_88.configs[var_204_1] = var_204_4
+
+		var_0_61(function()
+			var_0_69.write(var_0_69.presets_path .. "\\" .. var_204_1 .. ".cfg", var_204_4)
+		end)
 
 		return "\a" .. var_204_1 .. " by " .. var_204_2 .. " added"
 	end
