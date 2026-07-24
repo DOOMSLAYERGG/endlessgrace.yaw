@@ -2232,6 +2232,8 @@ LPH_NO_VIRTUALIZE(function()
 			state = {
 				var_155_4.header(var_155_5.angles, "States builder"),
 				selector = var_155_5.angles:combobox("\nstateselector", var_0_30.distribute(var_0_108.states, 2), nil, false),
+				export = var_155_5.angles:button("\f<hysteria>Export state"),
+				import = var_155_5.angles:button("Import state"),
 				var_155_4.header(var_155_5.angles)
 			},
 			builder = {},
@@ -2472,6 +2474,80 @@ LPH_NO_VIRTUALIZE(function()
 			}, arg_181_1[1] ~= "override" and var_155_11.override or nil)
 		end)
 	end
+
+	local var_155_ei = {
+		source = nil,
+		name_to_key = {}
+	}
+
+	for iter_155_ei_0, iter_155_ei_1 in var_0_9(var_0_108.states) do
+		var_155_ei.name_to_key[iter_155_ei_1[2]] = iter_155_ei_1[1]
+	end
+
+	local function var_155_ei_key()
+		return var_155_ei.name_to_key[var_0_127.antiaim.state.selector:get()]
+	end
+
+	local function var_155_ei_copy(arg_ei_0, arg_ei_1)
+		if arg_ei_0 == nil or arg_ei_1 == nil then
+			return
+		end
+
+		if arg_ei_0.__type == "pui::element" then
+			if arg_ei_1.__type == "pui::element" then
+				var_0_61(function()
+					arg_ei_1:set(arg_ei_0:get())
+				end)
+			end
+
+			return
+		end
+
+		if var_0_24(arg_ei_0) ~= "table" then
+			return
+		end
+
+		for iter_ei_0, iter_ei_1 in var_0_10(arg_ei_0) do
+			if var_0_24(iter_ei_0) ~= "number" then
+				var_155_ei_copy(iter_ei_1, arg_ei_1[iter_ei_0])
+			end
+		end
+	end
+
+	var_0_127.antiaim.state.export:set_callback(function()
+		local var_ei_k = var_155_ei_key()
+
+		if not var_ei_k then
+			return
+		end
+
+		var_155_ei.source = var_ei_k
+
+		var_0_57("Exported ", var_0_127.antiaim.state.selector:get(), " anti-aim")
+	end)
+	var_0_127.antiaim.state.import:set_callback(function()
+		local var_ei_k = var_155_ei_key()
+
+		if not var_ei_k then
+			return
+		end
+
+		if not var_155_ei.source then
+			var_0_57("Export a state first")
+
+			return
+		end
+
+		if var_155_ei.source == var_ei_k then
+			var_0_57("Cannot import into the same state")
+
+			return
+		end
+
+		var_155_ei_copy(var_0_127.antiaim.builder[var_155_ei.source], var_0_127.antiaim.builder[var_ei_k])
+
+		var_0_57("Imported to ", var_0_127.antiaim.state.selector:get())
+	end)
 
 	local function var_155_13(arg_182_0, arg_182_1)
 		arg_182_1:set_callback(function(arg_183_0)
