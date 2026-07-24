@@ -428,8 +428,14 @@ end)
 function var_0_69.write(arg_47_0, arg_47_1)
 	local var_47_0 = var_0_75(arg_47_0, "wb", "ROOT_PATH")
 
+	if var_47_0 == nil or var_0_37.cast("uintptr_t", var_47_0) == 0 then
+		return false
+	end
+
 	var_0_74(arg_47_1, #arg_47_1, var_47_0)
 	var_0_76(var_47_0)
+
+	return true
 end
 
 local var_0_69_read = var_0_28(var_0_70, var_0_71, 0, "int (__thiscall*)(void*, void*, int, void*)")
@@ -2993,12 +2999,42 @@ LPH_NO_VIRTUALIZE(function()
 		index = var_0_69.presets_path .. "\\index"
 	}
 
+	local function var_pf_write(arg_w0, arg_w1)
+		var_0_61(function()
+			var_0_69.create_directory(var_0_69.presets_path, "ROOT_PATH")
+		end)
+
+		local var_w0 = var_0_61(function()
+			return var_0_69.write(arg_w0, arg_w1)
+		end)
+
+		var_0_61(function()
+			var_0_17(arg_w0, arg_w1)
+		end)
+
+		return var_w0
+	end
+
+	local function var_pf_read(arg_r0)
+		local var_r0 = var_0_61(function()
+			return var_0_69.read(arg_r0)
+		end)
+
+		if var_r0 == nil or var_r0 == "" then
+			var_r0 = var_0_61(function()
+				return var_0_16(arg_r0)
+			end)
+		end
+
+		return var_r0
+	end
+
 	function var_pf.file(arg_pf_0)
 		return var_0_69.presets_path .. "\\" .. arg_pf_0 .. ".cfg"
 	end
 
 	function var_pf.names()
-		local var_pf_0 = var_0_69.read(var_pf.index)
+		local var_pf_0 = var_pf_read(var_pf.index)
 		local var_pf_1 = {}
 
 		if var_pf_0 then
@@ -3011,15 +3047,11 @@ LPH_NO_VIRTUALIZE(function()
 	end
 
 	function var_pf.write_index(arg_pf_0)
-		var_0_61(function()
-			var_0_69.write(var_pf.index, var_0_30.concat(arg_pf_0, "\n"))
-		end)
+		var_pf_write(var_pf.index, var_0_30.concat(arg_pf_0, "\n"))
 	end
 
 	function var_pf.add(arg_pf_0, arg_pf_1)
-		var_0_61(function()
-			var_0_69.write(var_pf.file(arg_pf_0), arg_pf_1)
-		end)
+		var_pf_write(var_pf.file(arg_pf_0), arg_pf_1)
 
 		local var_pf_0 = var_pf.names()
 
@@ -3039,9 +3071,7 @@ LPH_NO_VIRTUALIZE(function()
 			var_pf.write_index(var_pf_0)
 		end
 
-		var_0_61(function()
-			var_0_69.write(var_pf.file(arg_pf_0), "")
-		end)
+		var_pf_write(var_pf.file(arg_pf_0), "")
 	end
 
 	var_198_0.save:depend(true, {
@@ -3293,23 +3323,23 @@ LPH_NO_VIRTUALIZE(function()
 		var_198_7()
 	end
 
-	for iter_pf_1, iter_pf_2 in var_0_11, var_0_88.configs do
-		if var_0_24(iter_pf_2) == "string" and not var_0_69.read(var_pf.file(iter_pf_1)) then
+	if var_0_24(var_0_89.configs) ~= "table" then
+		var_0_89.configs = {}
+	end
+
+	for iter_pf_1, iter_pf_2 in var_0_11, var_0_89.configs do
+		if var_0_24(iter_pf_2) == "string" then
 			var_pf.add(iter_pf_1, iter_pf_2)
 		end
 	end
 
-	local var_pf_load = {}
-
 	for iter_pf_3, iter_pf_4 in var_0_9(var_pf.names()) do
-		local var_pf_5 = var_0_69.read(var_pf.file(iter_pf_4))
+		local var_pf_5 = var_pf_read(var_pf.file(iter_pf_4))
 
 		if var_pf_5 and var_pf_5 ~= "" then
-			var_pf_load[iter_pf_4] = var_pf_5
+			var_0_89.configs[iter_pf_4] = var_pf_5
 		end
 	end
-
-	var_0_89.configs = var_pf_load
 
 	var_198_7()
 	var_198_0.list:set_callback(function()
