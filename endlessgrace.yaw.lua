@@ -2492,23 +2492,7 @@ LPH_NO_VIRTUALIZE(function()
 					var_155_8,
 					"des",
 					"j"
-				}, var_155_12:checkbox("\f<p>Jitter\f<z>des")),
-				l = var_155_6({
-					var_155_8,
-					"des",
-					"l"
-				}, var_155_12:slider("\f<p>Left / right\f<z>des", 0, 60, 60, true, "°")):depend({
-					var_0_127.antiaim.general.mode,
-					"endlessgrace"
-				}),
-				r = var_155_6({
-					var_155_8,
-					"des",
-					"r"
-				}, var_155_12:slider("\ndesright\f<z>", 0, 60, 60, true, "°")):depend({
-					var_0_127.antiaim.general.mode,
-					"endlessgrace"
-				})
+				}, var_155_12:checkbox("\f<p>Jitter\f<z>des"))
 			}, true
 		end)
 		var_155_11.bmode = var_155_4.feature(var_155_6({
@@ -3905,7 +3889,7 @@ LPH_JIT_MAX(function()
 				local var_233_2 = var_0_31.lerp(-arg_233_0.deg, arg_233_0.deg, var_233_0 < 0 and 1 + var_233_1 or var_233_1)
 
 				if var_221_1.cur.des.on then
-					local var_233_3 = var_0_31.lerp(-var_221_1.cur.des.r, var_221_1.cur.des.l, side == -1 and 1 - var_233_1 or var_233_1)
+					local var_233_3 = var_0_31.lerp(-60, 60, side == -1 and 1 - var_233_1 or var_233_1)
 
 					var_221_4.force_desync = var_233_3
 				end
@@ -3919,7 +3903,7 @@ LPH_JIT_MAX(function()
 				local var_234_3 = var_221_1.cur.des
 
 				if var_234_3.on and var_234_3.j then
-					var_221_4.force_desync = var_234_1 > 0 and var_234_3.l or var_234_1 < 0 and -var_234_3.r or var_234_1 == 0 and 0
+					var_221_4.force_desync = var_234_1 > 0 and 60 or var_234_1 < 0 and -60 or var_234_1 == 0 and 0
 				end
 
 				return var_234_2
@@ -3997,7 +3981,7 @@ LPH_JIT_MAX(function()
 
 					var_221_3.des = var_238_4
 				else
-					var_221_3.des = var_238_2 and var_238_0.r or -var_238_0.l
+					var_221_3.des = var_238_2 and 60 or -60
 				end
 			end
 		},
