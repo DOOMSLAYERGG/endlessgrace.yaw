@@ -2418,7 +2418,7 @@ LPH_NO_VIRTUALIZE(function()
 			"bmode",
 			"type"
 		}, var_155_12:combobox("Body yaw\f<z>bmode", {
-			"Default",
+			"Off",
 			"Static",
 			"Jitter",
 			"Opposite"
@@ -2470,7 +2470,7 @@ LPH_NO_VIRTUALIZE(function()
 					"Advanced"
 				})
 			}, function(arg_bmode_0)
-				return arg_bmode_0.value ~= "Default"
+				return arg_bmode_0.value == "Static" or arg_bmode_0.value == "Jitter"
 			end
 		end)
 		var_155_11.freeze = var_155_4.feature(var_155_6({
@@ -3740,7 +3740,7 @@ LPH_JIT_MAX(function()
 				end
 
 				local var_238_b = var_221_1.cur.bmode
-				local var_238_1 = var_238_b and var_238_b.type or "Default"
+				local var_238_1 = var_238_b and var_238_b.type or "Off"
 				local var_238_2
 
 				if var_238_1 == "Static" then
@@ -3757,7 +3757,7 @@ LPH_JIT_MAX(function()
 					var_238_2 = var_0_127.antiaim.general.invert:get()
 				end
 
-				if var_238_1 ~= "Default" and var_238_b then
+				if (var_238_1 == "Static" or var_238_1 == "Jitter") and var_238_b then
 					local var_238_4
 
 					if var_238_b.bd_type == "Advanced" then
