@@ -463,6 +463,65 @@ function var_0_69.read(arg_r0)
 	return var_r3
 end
 
+var_0_61(function()
+	var_0_37.cdef([[
+		typedef struct { uint32_t a, b; } endlessgrace_ft_t;
+		typedef struct {
+			uint32_t dwFileAttributes;
+			endlessgrace_ft_t ftCreationTime;
+			endlessgrace_ft_t ftLastAccessTime;
+			endlessgrace_ft_t ftLastWriteTime;
+			uint32_t nFileSizeHigh;
+			uint32_t nFileSizeLow;
+			uint32_t dwReserved0;
+			uint32_t dwReserved1;
+			char cFileName[260];
+			char cAlternateFileName[14];
+		} endlessgrace_find_data_t;
+		void* FindFirstFileA(const char* lpFileName, endlessgrace_find_data_t* lpFindFileData);
+		int FindNextFileA(void* hFindFile, endlessgrace_find_data_t* lpFindFileData);
+		int FindClose(void* hFindFile);
+	]])
+end)
+
+local var_0_69_k32 = var_0_61(function()
+	return var_0_37.load("kernel32")
+end)
+
+function var_0_69.list_presets()
+	local var_l0 = {}
+
+	if not var_0_69_k32 then
+		return var_l0
+	end
+
+	var_0_61(function()
+		local var_l1 = var_0_37.new("endlessgrace_find_data_t")
+		local var_l2 = var_0_69.game_directory .. var_0_69.presets_path .. "\\*.cfg"
+		local var_l3 = var_0_69_k32.FindFirstFileA(var_l2, var_l1)
+
+		if var_l3 == nil or var_l3 == var_0_37.cast("void*", -1) then
+			return
+		end
+
+		repeat
+			local var_l4 = var_0_37.string(var_l1.cFileName)
+
+			if var_l4 ~= "" then
+				var_l4 = var_0_32.gsub(var_l4, "%.cfg$", "")
+
+				if var_l4 ~= "" and var_l4 ~= "index" then
+					var_l0[#var_l0 + 1] = var_l4
+				end
+			end
+		until var_0_69_k32.FindNextFileA(var_l3, var_l1) == 0
+
+		var_0_69_k32.FindClose(var_l3)
+	end)
+
+	return var_l0
+end
+
 local var_0_78
 
 LPH_NO_VIRTUALIZE(function()
@@ -3034,6 +3093,12 @@ LPH_NO_VIRTUALIZE(function()
 	end
 
 	function var_pf.names()
+		local var_pf_2 = var_0_69.list_presets()
+
+		if #var_pf_2 > 0 then
+			return var_pf_2
+		end
+
 		local var_pf_0 = var_pf_read(var_pf.index)
 		local var_pf_1 = {}
 
@@ -3366,6 +3431,52 @@ LPH_NO_VIRTUALIZE(function()
 	var_198_0.export:set_callback(function()
 		var_198_8("export", var_0_129.name)
 	end)
+
+	local var_pf_sig = false
+	local var_pf_next = 0
+
+	local function var_pf_tick()
+		if var_0_38.realtime() < var_pf_next then
+			return
+		end
+
+		var_pf_next = var_0_38.realtime() + 1
+
+		local var_pt_0 = var_0_69.list_presets()
+
+		if #var_pt_0 == 0 then
+			return
+		end
+
+		var_0_30.sort(var_pt_0)
+
+		local var_pt_1 = var_0_30.concat(var_pt_0, "\n")
+
+		if var_pt_1 == var_pf_sig then
+			return
+		end
+
+		var_pf_sig = var_pt_1
+
+		local var_pt_2 = {}
+
+		for iter_pt_0, iter_pt_1 in var_0_9(var_pt_0) do
+			local var_pt_3 = var_pf_read(var_pf.file(iter_pt_1))
+
+			if var_pt_3 and var_pt_3 ~= "" then
+				var_pt_2[iter_pt_1] = var_pt_3
+			end
+		end
+
+		if var_0_11(var_pt_2) then
+			var_0_89.configs = var_pt_2
+
+			var_pf.write_index(var_pt_0)
+			var_198_7()
+		end
+	end
+
+	var_0_78.paint_ui:set(var_pf_tick)
 end)()
 
 local var_0_130 = var_0_65.user
