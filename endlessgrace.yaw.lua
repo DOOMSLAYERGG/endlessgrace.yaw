@@ -437,20 +437,24 @@ local var_0_69_read = var_0_28(var_0_70, var_0_71, 0, "int (__thiscall*)(void*, 
 function var_0_69.read(arg_r0)
 	local var_r0 = var_0_75(arg_r0, "rb", "ROOT_PATH")
 
-	if var_r0 == nil then
+	if var_r0 == nil or var_0_37.cast("uintptr_t", var_r0) == 0 then
 		return
 	end
 
-	local var_r1 = var_0_37.new("char[?]", 262144)
-	local var_r2 = var_0_69_read(var_r1, 262144, var_r0)
+	local var_r3 = var_0_61(function()
+		local var_r1 = var_0_37.new("char[?]", 262144)
+		local var_r2 = var_0_69_read(var_r1, 262144, var_r0)
+
+		if var_r2 <= 0 then
+			return
+		end
+
+		return var_0_37.string(var_r1, var_r2)
+	end)
 
 	var_0_76(var_r0)
 
-	if var_r2 <= 0 then
-		return
-	end
-
-	return var_0_37.string(var_r1, var_r2)
+	return var_r3
 end
 
 local var_0_78
@@ -3297,7 +3301,7 @@ LPH_NO_VIRTUALIZE(function()
 
 	local var_pf_load = {}
 
-	for iter_pf_3, iter_pf_4 in var_0_9, var_pf.names() do
+	for iter_pf_3, iter_pf_4 in var_0_9(var_pf.names()) do
 		local var_pf_5 = var_0_69.read(var_pf.file(iter_pf_4))
 
 		if var_pf_5 and var_pf_5 ~= "" then
