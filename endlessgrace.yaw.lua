@@ -2272,7 +2272,13 @@ LPH_NO_VIRTUALIZE(function()
 			var_155_4.header(var_155_5.angles, "Other"),
 			aspect = var_155_4.feature(var_155_5.angles:checkbox("Aspect ratio"), function()
 				return {
-					ratio = var_155_5.angles:slider("\naratio", 80, 200, 133, true, nil, 0.01, var_0_30.distribute(var_0_109.aspect_ratios, 2, 1))
+					ratio = var_155_5.angles:slider("\f<p>Ratio", 0, 199, 100, true, "", 1, var_155_aspect)
+				}, true
+			end),
+			thirdperson = var_155_4.feature(var_155_5.angles:checkbox("Third person"), function()
+				return {
+					dist = var_155_5.angles:slider("\f<p>Distance", 0, 250, 100, true),
+					wall = var_155_5.angles:checkbox("\f<p>Wall threshold")
 				}, true
 			end),
 			dpi = var_155_5.angles:checkbox("DPI scaling")
@@ -2307,17 +2313,6 @@ LPH_NO_VIRTUALIZE(function()
 						"Jitter",
 						"No step back"
 					})
-				}, true
-			end),
-			aspect = var_155_4.feature(var_155_5.angles:checkbox("Aspect ratio"), function()
-				return {
-					ratio = var_155_5.angles:slider("\f<p>Ratio", 0, 199, 100, true, "", 1, var_155_aspect)
-				}, true
-			end),
-			thirdperson = var_155_4.feature(var_155_5.angles:checkbox("Third person"), function()
-				return {
-					dist = var_155_5.angles:slider("\f<p>Distance", 0, 250, 100, true),
-					wall = var_155_5.angles:checkbox("\f<p>Wall threshold")
 				}, true
 			end)
 		},
@@ -4736,21 +4731,21 @@ LPH_NO_VIRTUALIZE(function()
 	}
 	var_282_0.aspect = {
 		apply = function()
-			if not var_0_127.misc.aspect.on:get() then
+			if not var_0_127.visuals.aspect.on:get() then
 				cvar.r_aspectratio:set_float(0)
 
 				return
 			end
 
 			local var_asp_w, var_asp_h = var_0_34.screen_size()
-			local var_asp_f = 2 - var_0_127.misc.aspect.ratio:get() * 0.01
+			local var_asp_f = 2 - var_0_127.visuals.aspect.ratio:get() * 0.01
 			local var_asp_v = var_asp_f == 1 and 0 or var_asp_w * var_asp_f / var_asp_h
 
 			cvar.r_aspectratio:set_float(var_asp_v)
 		end,
 		run = function(arg_asp_0)
-			var_0_127.misc.aspect.on:set_callback(arg_asp_0.apply, true)
-			var_0_127.misc.aspect.ratio:set_callback(arg_asp_0.apply, true)
+			var_0_127.visuals.aspect.on:set_callback(arg_asp_0.apply, true)
+			var_0_127.visuals.aspect.ratio:set_callback(arg_asp_0.apply, true)
 			var_0_78.shutdown:set(function()
 				cvar.r_aspectratio:set_float(0)
 			end)
@@ -4782,13 +4777,13 @@ LPH_NO_VIRTUALIZE(function()
 			return arg_tp_0, false
 		end,
 		work = function(arg_tp_1)
-			local var_tw0 = var_0_127.misc.thirdperson.on:get()
-			local var_tw1 = var_0_127.misc.thirdperson.dist:get()
+			local var_tw0 = var_0_127.visuals.thirdperson.on:get()
+			local var_tw1 = var_0_127.visuals.thirdperson.dist:get()
 			local var_tw2 = var_tw1
 			local var_tw3 = 0.07
 
 			if var_tw0 and var_0_113.valid then
-				if var_0_127.misc.thirdperson.wall:get() then
+				if var_0_127.visuals.thirdperson.wall:get() then
 					local var_tw4, var_tw5 = arg_tp_1.wall_distance(var_tw1)
 
 					if var_tw5 and var_tw4 < 15 then
@@ -5460,57 +5455,6 @@ LPH_NO_VIRTUALIZE(function()
 
 	local var_282_11 = {}
 
-	var_282_11.aspect = {
-		active = false,
-		value = var_0_93 / var_0_94,
-		init = var_0_93 / var_0_94,
-		activate = function()
-			var_282_11.aspect.active = true
-		end,
-		work = function()
-			local var_321_0 = var_282_11.aspect
-			local var_321_1 = var_0_127.visuals.aspect
-
-			if not var_321_0.active then
-				return
-			end
-
-			if var_321_1.on.value then
-				local var_321_2 = var_321_1.ratio.value * 0.01
-
-				var_321_0.value = var_0_100.lerp(var_321_0.value, var_321_2, 8, 0.001)
-				var_321_0.active = var_321_2 ~= var_321_0.value
-
-				cvar.r_aspectratio:set_float(var_321_0.value)
-			else
-				var_321_0.value = var_0_100.lerp(var_321_0.value, var_321_0.init)
-
-				cvar.r_aspectratio:set_float(var_321_0.value)
-
-				if var_321_0.value == var_321_0.init then
-					var_0_78.paint_ui:unset(var_321_0.work)
-					cvar.r_aspectratio:set_float(0)
-
-					var_321_0.active = false
-				end
-			end
-		end,
-		run = function(arg_322_0)
-			local var_322_0 = var_0_127.visuals.aspect
-
-			var_322_0.on:set_callback(function(arg_323_0)
-				arg_322_0.active = true
-
-				if arg_323_0.value then
-					var_0_78.paint_ui:set(arg_322_0.work)
-				end
-			end, true)
-			var_322_0.ratio:set_callback(arg_322_0.activate, true)
-			var_0_3(function()
-				cvar.r_aspectratio:set_float(0)
-			end)
-		end
-	}
 	var_282_11.marker = {
 		duration = 2,
 		list = {},
