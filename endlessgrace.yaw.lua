@@ -2449,6 +2449,26 @@ LPH_NO_VIRTUALIZE(function()
 				}, var_155_12:slider("\f<z>addyawr", -60, 60, 0, true, "°"))
 			}, true
 		end)
+		var_155_11.spin_l = var_155_6({
+			var_155_8,
+			"spin_l"
+		}, var_155_12:slider("\f<p>Spin left\f<z>", -180, 180, 0, true, "°", 1))
+		var_155_11.spin_r = var_155_6({
+			var_155_8,
+			"spin_r"
+		}, var_155_12:slider("\f<p>Spin right\f<z>", -180, 180, 0, true, "°", 1))
+		var_155_11.spin_speed = var_155_6({
+			var_155_8,
+			"spin_speed"
+		}, var_155_12:slider("\f<p>Spin speed\f<z>", 1, 50, 10, true, " ", 0.1))
+		var_155_11.rand_l = var_155_6({
+			var_155_8,
+			"rand_l"
+		}, var_155_12:slider("\f<p>Random left\f<z>", 0, 180, 0, true, "°", 1))
+		var_155_11.rand_r = var_155_6({
+			var_155_8,
+			"rand_r"
+		}, var_155_12:slider("\f<p>Random right\f<z>", 0, 180, 0, true, "°", 1))
 		var_155_11.mod = var_155_4.feature(var_155_6({
 			var_155_8,
 			"mod",
@@ -2622,6 +2642,36 @@ LPH_NO_VIRTUALIZE(function()
 			function(arg_hd_0)
 				return arg_hd_0:get("Hold ticks")
 			end
+		})
+
+		var_155_11.yawfeat = var_155_6({
+			var_155_8,
+			"yawfeat"
+		}, var_155_5.other:combobox("Yaw features\f<z>", {
+			"Off",
+			"Spin",
+			"Random"
+		}))
+
+		var_155_11.spin_l:depend({
+			var_155_11.yawfeat,
+			"Spin"
+		})
+		var_155_11.spin_r:depend({
+			var_155_11.yawfeat,
+			"Spin"
+		})
+		var_155_11.spin_speed:depend({
+			var_155_11.yawfeat,
+			"Spin"
+		})
+		var_155_11.rand_l:depend({
+			var_155_11.yawfeat,
+			"Random"
+		})
+		var_155_11.rand_r:depend({
+			var_155_11.yawfeat,
+			"Random"
 		})
 
 		var_0_44.traverse(var_155_11, function(arg_181_0, arg_181_1)
@@ -3925,6 +3975,21 @@ LPH_JIT_MAX(function()
 
 				if not var_221_4.no_offset then
 					var_221_3.mod = var_221_3.mod + var_221_1.cur.off
+				end
+
+				local var_237_1 = var_221_1.cur.yawfeat
+
+				if var_237_1 == "Spin" then
+					local var_237_2 = var_0_38.curtime() * (var_221_1.cur.spin_speed or 10) / 10 % 2 - 1
+					local var_237_3 = var_221_2.switch and (var_221_1.cur.spin_l or 0) or (var_221_1.cur.spin_r or 0)
+
+					var_221_3.mod = var_221_3.mod + var_0_31.lerp(-var_237_3, 0, var_237_2) * 0.5
+				elseif var_237_1 == "Random" then
+					if var_221_2.switch then
+						var_221_3.mod = var_221_3.mod + var_0_34.random_int(-(var_221_1.cur.rand_l or 0), 0)
+					else
+						var_221_3.mod = var_221_3.mod + var_0_34.random_int(0, var_221_1.cur.rand_r or 0)
+					end
 				end
 			end
 		},
