@@ -2219,21 +2219,14 @@ LPH_NO_VIRTUALIZE(function()
 	var_0_127 = {
 		rage = {
 			var_155_4.header(var_155_5.angles, "Ragebot"),
-			teleport = var_155_4.feature({
-				var_155_5.angles:checkbox("Auto teleport", 0)
-			}, function(arg_163_0)
+			jumpscout = var_155_5.angles:checkbox("Jump scout helper"),
+			aimhelper = var_155_5.angles:checkbox("Aimbot helper"),
+			ideal = var_155_5.angles:checkbox("Ideal tick", 0),
+			dynhc = var_155_4.feature(var_155_5.angles:checkbox("Dynamic hitchance"), function()
 				return {
-					land = var_155_5.angles:checkbox("\f<p>Ensure landing"),
-					pistol = var_155_5.angles:checkbox("\f<p>Allow pistols")
-				}, true
-			end),
-			exswitch = var_155_4.feature({
-				var_155_5.angles:checkbox("Auto hide shots")
-			}, function(arg_164_0)
-				return {
-					allow = var_155_5.angles:multiselect("\f<p>Additional weapons", {
-						"Pistols",
-						"Desert Eagle"
+					mode = var_155_5.angles:combobox("\f<p>Curve", {
+						"Farther = lower",
+						"Farther = higher"
 					})
 				}, true
 			end),
@@ -5546,104 +5539,6 @@ LPH_NO_VIRTUALIZE(function()
 
 	local var_282_12 = {}
 
-	var_282_12.teleport = {
-		active = false,
-		latest = 0,
-		work = function(arg_331_0, arg_331_1)
-			var_282_12.teleport.active = var_0_127.rage.teleport.on.hotkey:get()
-
-			if not var_282_12.teleport.active or var_0_113.exploit.active ~= var_0_109.exploit.DT then
-				return
-			end
-
-			local var_331_0 = false
-			local var_331_1 = var_282_12.teleport
-			local var_331_2 = var_0_127.rage.teleport
-			local var_331_3 = var_0_107.misc.settings.maxshift.value - var_0_107.rage.aimbot.dt_fl[1].value + 1
-
-			var_331_1.active = var_331_1.active and not (var_331_3 < 8) and var_331_1.latest ~= arg_331_0.command_number and not (var_0_113.velocity < 100) and not not var_0_113.jumping
-
-			if not var_331_1.active then
-				return
-			end
-
-			local var_331_4 = var_0_113.weapon_t
-
-			if not var_331_4 then
-				return
-			end
-
-			local var_331_5 = var_331_4.weapon_type_int
-
-			var_331_1.active = var_331_1.active and not var_331_4.is_full_auto and var_331_5 ~= 9 and var_331_5 ~= 0 and (not not var_331_2.pistol.value or var_331_5 ~= 1)
-
-			if not var_331_1.active then
-				return
-			end
-
-			local var_331_6 = var_0_107.rage.aimbot.damage_ovr[1].value and var_0_107.rage.aimbot.damage_ovr[1]:get_hotkey() and var_0_107.rage.aimbot.damage_ovr[2].value or var_0_107.rage.aimbot.damage.value
-			local var_331_7 = var_0_50(var_0_36.get_prop(var_0_113.self, "m_vecVelocity"))
-			local var_331_8 = var_0_50(var_0_36.get_prop(var_0_113.self, "m_vecOrigin"))
-			local var_331_9 = var_0_50(var_0_34.eye_position())
-			local var_331_10 = var_0_50(var_0_34.extrapolate(var_331_9.x, var_331_9.y, var_331_9.z, var_331_7, var_331_3))
-			local var_331_11 = var_0_34.trace_line(var_0_113.self, var_331_9.x, var_331_9.y, var_331_9.z, var_331_10.x, var_331_10.y, var_331_10.z)
-
-			var_331_10.x = var_0_31.lerp(var_331_9.x, var_331_10.x, var_331_11)
-			var_331_10.y = var_0_31.lerp(var_331_9.y, var_331_10.y, var_331_11)
-			var_331_10.z = var_0_31.lerp(var_331_9.z, var_331_10.z, var_331_11)
-
-			local var_331_12 = var_0_34.current_threat()
-
-			for iter_331_0 = 1, #var_0_114 do
-				local var_331_13 = var_0_114[iter_331_0]
-
-				if not var_331_13 or not var_0_36.is_enemy(var_331_13) or not var_0_36.is_alive(var_331_13) then
-					-- block empty
-				elseif var_331_8:dist(var_0_50(var_0_36.get_prop(var_331_13, "m_vecOrigin"))) < 400 or var_331_13 == var_331_12 then
-					local var_331_14 = var_0_50(var_0_36.hitbox_position(var_331_13, 0))
-
-					if var_0_34.visible(var_331_14.x, var_331_14.y, var_331_14.z) then
-						var_331_0 = true
-
-						break
-					end
-
-					local var_331_15 = {
-						var_0_34.trace_bullet(var_0_113.self, var_331_10.x, var_331_10.y, var_331_10.z, var_331_14.x, var_331_14.y, var_331_14.z)
-					}
-					local var_331_16 = var_331_15[2] or 0
-					local var_331_17 = var_0_31.min(var_331_6, var_0_36.get_prop(var_331_13, "m_iHealth"))
-
-					if var_331_15[1] and var_331_17 < var_331_16 then
-						var_331_0 = true
-
-						break
-					end
-				end
-			end
-
-			if var_331_0 then
-				if var_331_2.land.value then
-					local var_331_18 = var_0_113.crouching and var_331_4.recovery_time_crouch or var_331_4.recovery_time_stand
-					local var_331_19 = var_0_50(var_0_34.extrapolate(var_331_8.x, var_331_8.y, var_331_8.z, var_331_7, var_331_3))
-
-					var_331_19.z = var_331_19.z - var_331_18
-
-					if not (var_0_34.trace_line(var_0_113.self, var_331_8.x, var_331_8.y, var_331_8.z, var_331_19.x, var_331_19.y, var_331_19.z) < 1) then
-						return
-					end
-				end
-
-				var_331_1.latest = arg_331_0.command_number
-				arg_331_0.discharge_pending = true
-			end
-		end,
-		run = function(arg_332_0)
-			var_0_127.rage.teleport.on:set_callback(function(arg_333_0)
-				var_0_78.setup_command(arg_333_0.value, arg_332_0.work)
-			end, true)
-		end
-	}
 	var_282_12.resolver = {
 		records = {},
 		gather = function(arg_334_0, arg_334_1)
@@ -5752,60 +5647,6 @@ LPH_NO_VIRTUALIZE(function()
 			var_0_78.shutdown(arg_339_0.restore)
 		end
 	}
-	var_282_12.exswitch = {
-		ovr = false,
-		latest = false,
-		work = function(arg_341_0)
-			local var_341_0 = var_282_12.exswitch
-			local var_341_1 = var_0_127.rage.exswitch
-			local var_341_2 = var_0_107.rage.aimbot.double_tap[1].hotkey:get()
-			local var_341_3 = var_0_107.aa.other.onshot.hotkey:get()
-			local var_341_4 = var_0_107.rage.other.peek.value and false
-			local var_341_5 = (not var_0_113.walking and not (var_0_113.velocity < 5) or not not var_341_4) and not var_0_113.crouching
-			local var_341_6 = false
-			local var_341_7 = var_0_113.weapon_t
-
-			if var_341_7 then
-				local var_341_8 = var_0_36.get_prop(var_0_113.weapon, "m_iItemDefinitionIndex")
-				local var_341_9
-
-				var_341_6, var_341_9 = var_341_7.is_full_auto, var_341_8 == 1
-
-				if var_341_7.weapon_type_int == 1 and not var_341_9 and not var_341_1.allow:get("Pistols") or var_341_9 and not var_341_1.allow:get("Desert Eagle") then
-					var_341_6 = true
-				end
-			end
-
-			if var_0_113.on_ground and var_341_2 and not var_341_6 and not var_341_5 and arg_341_0.weaponselect == 0 then
-				var_0_107.rage.aimbot.double_tap[1]:override(false)
-				var_0_107.aa.other.onshot.hotkey:override({
-					"Always on",
-					0
-				})
-
-				var_341_0.ovr = true
-			elseif var_341_0.ovr then
-				var_0_107.rage.aimbot.double_tap[1]:override()
-				var_0_107.rage.aimbot.double_tap[1]:set(true)
-				var_0_107.aa.other.onshot.hotkey:override()
-
-				var_341_0.ovr = false
-			end
-		end,
-		run = function(arg_342_0)
-			var_0_127.rage.exswitch.on:set_event("setup_command", arg_342_0.work)
-			var_0_127.rage.exswitch.on:set_callback(function(arg_343_0)
-				if not arg_343_0.value then
-					var_0_107.rage.aimbot.double_tap[1]:override()
-					var_0_107.aa.other.onshot.hotkey:override()
-				end
-			end)
-			var_0_78.shutdown:set(function()
-				var_0_107.rage.aimbot.double_tap[1]:override()
-				var_0_107.aa.other.onshot.hotkey:override()
-			end)
-		end
-	}
 	var_282_12.recharger = {
 		last = false,
 		state = false,
@@ -5869,6 +5710,96 @@ LPH_NO_VIRTUALIZE(function()
 			var_0_127.rage.peekfix:set_callback(function(arg_350_0)
 				var_0_78.setup_command(arg_350_0.value, arg_349_0.work)
 			end, true)
+		end
+	}
+
+	local function var_dh_range(arg_cn_0)
+		local var_cn_0 = arg_cn_0 or ""
+
+		if var_cn_0 == "CWeaponSSG08" or var_cn_0 == "CWeaponAWP" then
+			return 75, 45
+		elseif var_cn_0 == "CWeaponG3SG1" or var_cn_0 == "CWeaponSCAR20" then
+			return 62, 40
+		elseif var_cn_0 == "CDEagle" or var_cn_0 == "CWeaponRevolver" then
+			return 55, 33
+		elseif var_0_32.find(var_cn_0, "Nova") or var_0_32.find(var_cn_0, "XM1014") or var_0_32.find(var_cn_0, "Mag7") or var_0_32.find(var_cn_0, "Sawedoff") then
+			return 60, 18
+		elseif var_0_32.find(var_cn_0, "Glock") or var_0_32.find(var_cn_0, "P2000") or var_0_32.find(var_cn_0, "Usp") or var_0_32.find(var_cn_0, "USP") or var_0_32.find(var_cn_0, "P250") or var_0_32.find(var_cn_0, "FiveSeven") or var_0_32.find(var_cn_0, "Tec9") or var_0_32.find(var_cn_0, "CZ75") or var_0_32.find(var_cn_0, "Elite") then
+			return 46, 26
+		elseif var_0_32.find(var_cn_0, "Mp9") or var_0_32.find(var_cn_0, "MP9") or var_0_32.find(var_cn_0, "Mac10") or var_0_32.find(var_cn_0, "Mp7") or var_0_32.find(var_cn_0, "MP7") or var_0_32.find(var_cn_0, "Ump45") or var_0_32.find(var_cn_0, "P90") or var_0_32.find(var_cn_0, "Bizon") or var_0_32.find(var_cn_0, "Mp5") or var_0_32.find(var_cn_0, "MP5") then
+			return 46, 28
+		elseif var_0_32.find(var_cn_0, "M249") or var_0_32.find(var_cn_0, "Negev") then
+			return 46, 26
+		end
+
+		return 55, 33
+	end
+
+	var_282_12.helpers = {
+		sp_ovr = false,
+		hc_ovr = false,
+		work = function()
+			local var_h_sp = false
+			local var_h_hc
+
+			if var_0_127.rage.aimhelper.value then
+				var_h_sp = true
+			end
+
+			if var_0_33.is_active(var_0_127.rage.ideal) then
+				var_h_sp = true
+				var_h_hc = 100
+			end
+
+			if var_0_113.valid and var_0_113.threat then
+				local var_h_cn = var_0_113.weapon and var_0_36.get_classname(var_0_113.weapon)
+				local var_h_d = var_0_31.min(var_0_113.origin:dist(var_0_50(var_0_36.get_origin(var_0_113.threat))), 1350)
+
+				if var_h_hc == nil and var_0_127.rage.jumpscout.value and var_h_cn == "CWeaponSSG08" and var_0_36.get_prop(var_0_113.self, "m_bIsScoped") == 1 and not var_0_113.on_ground then
+					var_h_hc = var_0_31.round(55 - 22 * (var_h_d / 1350))
+				end
+
+				if var_h_hc == nil and var_0_127.rage.dynhc.on.value then
+					local var_h_close, var_h_far = var_dh_range(var_h_cn)
+					local var_h_t = var_h_d / 1350
+					local var_h_val
+
+					if var_0_127.rage.dynhc.mode.value == "Farther = higher" then
+						var_h_val = var_h_far + (var_h_close - var_h_far) * var_h_t
+					else
+						var_h_val = var_h_close - (var_h_close - var_h_far) * var_h_t
+					end
+
+					var_h_hc = var_0_31.round(var_h_val)
+				end
+			end
+
+			if var_h_sp then
+				var_0_107.rage.aimbot.force_sp:override(true)
+
+				var_282_12.helpers.sp_ovr = true
+			elseif var_282_12.helpers.sp_ovr then
+				var_0_107.rage.aimbot.force_sp:override()
+
+				var_282_12.helpers.sp_ovr = false
+			end
+
+			if var_h_hc then
+				var_0_107.rage.aimbot.hit_chance:override(var_h_hc)
+
+				var_282_12.helpers.hc_ovr = true
+			elseif var_282_12.helpers.hc_ovr then
+				var_0_107.rage.aimbot.hit_chance:override()
+
+				var_282_12.helpers.hc_ovr = false
+			end
+		end,
+		run = function(arg_h1_0)
+			var_0_78.setup_command:set(arg_h1_0.work)
+			var_0_78.shutdown:set(function()
+				var_0_107.rage.aimbot.force_sp:override()
+				var_0_107.rage.aimbot.hit_chance:override()
+			end)
 		end
 	}
 
@@ -6089,26 +6020,6 @@ LPH_NO_VIRTUALIZE(function()
 				end
 
 				return var_362_0, var_0_99.measure_text("-", var_362_2)
-			end,
-			x = 0,
-			ideal = {
-				0
-			}
-		},
-		{
-			0,
-			function(arg_363_0, arg_363_1, arg_363_2)
-				local var_363_0, var_363_1 = var_0_127.rage.teleport.on.hotkey:get()
-				local var_363_2 = var_0_127.rage.teleport.on.value and var_363_0 and var_363_1 ~= 0
-				local var_363_3 = "TP"
-
-				if arg_363_0[1] > 0 then
-					local var_363_4 = var_0_100.condition(arg_363_0.ideal, var_282_12.teleport.active, -8)
-
-					var_0_99.text(arg_363_1, arg_363_2, var_0_91.text:lerp(var_0_91.accent, var_363_4), "-", nil, var_363_3)
-				end
-
-				return var_363_2, var_0_99.measure_text("-", var_363_3)
 			end,
 			x = 0,
 			ideal = {
