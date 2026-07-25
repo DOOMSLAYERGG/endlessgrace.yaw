@@ -2257,38 +2257,6 @@ LPH_NO_VIRTUALIZE(function()
 				end
 				return var_dh_ret, true
 			end),
-			bodyaim = var_155_4.feature(var_155_5.angles:checkbox("Prefer body aim"), function()
-				return {
-					var_155_5.angles:label("\f<p>Prefer body aim on"),
-					conds = var_155_5.angles:multiselect("\f<p>Prefer body aim on", {
-						"Higher than you",
-						"Lower than you",
-						"Lethal",
-						"After X Misses",
-						"HP lower than X"
-					}),
-					misses_lb = var_155_5.angles:label("\f<p>~ Misses"),
-					misses = var_155_5.angles:slider("\f<p>\n~ Misses", 0, 10, 2),
-					hp_lb = var_155_5.angles:label("\f<p>~ HP"),
-					hp = var_155_5.angles:slider("\f<p>\n~ HP", 0, 100, 80)
-				}, true
-			end),
-			safepoint = var_155_4.feature(var_155_5.angles:checkbox("Force safe point"), function()
-				return {
-					var_155_5.angles:label("\f<p>Force safe point on"),
-					conds = var_155_5.angles:multiselect("\f<p>Force safe point on", {
-						"Higher than you",
-						"Lower than you",
-						"Lethal",
-						"After X Misses",
-						"HP lower than X"
-					}),
-					misses_lb = var_155_5.angles:label("\f<p>~ Misses"),
-					misses = var_155_5.angles:slider("\f<p>\n~ Misses", 0, 10, 2),
-					hp_lb = var_155_5.angles:label("\f<p>~ HP"),
-					hp = var_155_5.angles:slider("\f<p>\n~ HP", 0, 100, 80)
-				}, true
-			end),
 			recharge = var_155_5.angles:checkbox("Allow force recharge"),
 			resolver = var_155_4.private(var_155_5.angles:checkbox("Jitter resolver")),
 			peekfix = var_155_4.private(var_155_5.angles:checkbox("Early defensive"))
@@ -2746,19 +2714,6 @@ LPH_NO_VIRTUALIZE(function()
 				var_dh_d[var_dh_id .. "_far"]:depend({ var_dh_d.tab, iter_dh_1 })
 			end
 		end
-	end
-
-	do
-		local var_ba = var_0_127.rage.bodyaim
-		var_ba.misses_lb:depend({ var_ba.conds, "After X Misses" })
-		var_ba.misses:depend({ var_ba.conds, "After X Misses" })
-		var_ba.hp_lb:depend({ var_ba.conds, "HP lower than X" })
-		var_ba.hp:depend({ var_ba.conds, "HP lower than X" })
-		local var_sp = var_0_127.rage.safepoint
-		var_sp.misses_lb:depend({ var_sp.conds, "After X Misses" })
-		var_sp.misses:depend({ var_sp.conds, "After X Misses" })
-		var_sp.hp_lb:depend({ var_sp.conds, "HP lower than X" })
-		var_sp.hp:depend({ var_sp.conds, "HP lower than X" })
 	end
 
 	var_0_127.antiaim.state.export:set_callback(function()
@@ -5921,89 +5876,6 @@ LPH_NO_VIRTUALIZE(function()
 			far = var_dh_d.global_far
 		}
 	end
-
-	var_282_12.bodyaim = {
-		misses = {},
-		work = function()
-			if not var_0_113.valid then return end
-			local var_ba_cfg = var_0_127.rage.bodyaim
-			local var_sp_cfg = var_0_127.rage.safepoint
-			local var_ba_on = var_ba_cfg.on.value
-			local var_sp_on = var_sp_cfg.on.value
-			if not var_ba_on and not var_sp_on then return end
-
-			local var_ba_lp = var_0_113.self
-			if not var_ba_lp then return end
-			local var_ba_lz = var_0_19(3, var_0_36.get_origin(var_ba_lp))
-			local var_ba_enemies = var_0_36.get_players(true)
-			if not var_ba_enemies then return end
-			local var_ba_mis = var_282_12.bodyaim.misses
-			local var_ba_wt = var_0_113.weapon_t
-
-			for iter_ba_0, iter_ba_1 in var_0_9(var_ba_enemies) do
-				local var_ba_hp = var_0_36.get_prop(iter_ba_1, "m_iHealth") or 0
-				local var_ba_ez = var_0_19(3, var_0_36.get_origin(iter_ba_1))
-				local var_ba_higher = var_ba_ez and var_ba_lz and var_ba_ez > var_ba_lz + 20
-				local var_ba_lower = var_ba_ez and var_ba_lz and var_ba_ez < var_ba_lz - 20
-				local var_ba_mc = var_ba_mis[iter_ba_1] or 0
-				local var_ba_lethal = var_ba_wt and var_ba_hp > 0 and var_ba_hp <= (var_ba_wt.damage or 0)
-
-				if var_ba_on then
-					local var_ba_force = false
-					local var_ba_c = var_ba_cfg.conds
-					if var_ba_c:get("Higher than you") and var_ba_higher then var_ba_force = true end
-					if var_ba_c:get("Lower than you") and var_ba_lower then var_ba_force = true end
-					if var_ba_c:get("Lethal") and var_ba_lethal then var_ba_force = true end
-					if var_ba_c:get("After X Misses") and var_ba_mc >= var_ba_cfg.misses:get() then var_ba_force = true end
-					if var_ba_c:get("HP lower than X") and var_ba_hp > 0 and var_ba_hp <= var_ba_cfg.hp:get() then var_ba_force = true end
-					plist.set(iter_ba_1, "Override prefer body aim", var_ba_force and "Force" or "-")
-				end
-
-				if var_sp_on then
-					local var_sp_force = false
-					local var_sp_c = var_sp_cfg.conds
-					if var_sp_c:get("Higher than you") and var_ba_higher then var_sp_force = true end
-					if var_sp_c:get("Lower than you") and var_ba_lower then var_sp_force = true end
-					if var_sp_c:get("Lethal") and var_ba_lethal then var_sp_force = true end
-					if var_sp_c:get("After X Misses") and var_ba_mc >= var_sp_cfg.misses:get() then var_sp_force = true end
-					if var_sp_c:get("HP lower than X") and var_ba_hp > 0 and var_ba_hp <= var_sp_cfg.hp:get() then var_sp_force = true end
-					plist.set(iter_ba_1, "Override safe point", var_sp_force and "On" or "-")
-				end
-			end
-		end,
-		on_miss = function(arg_bam_0)
-			local var_bam_t = arg_bam_0.target
-			if var_bam_t then
-				var_282_12.bodyaim.misses[var_bam_t] = (var_282_12.bodyaim.misses[var_bam_t] or 0) + 1
-			end
-		end,
-		on_hit = function(arg_bah_0)
-			local var_bah_t = arg_bah_0.target
-			if var_bah_t then
-				var_282_12.bodyaim.misses[var_bah_t] = 0
-			end
-		end,
-		run = function(arg_bar_0)
-			var_0_78.setup_command:set(function()
-				var_0_61(arg_bar_0.work)
-			end)
-			var_0_78.aim_miss:set(function(arg_bam_e)
-				var_0_61(arg_bar_0.on_miss, arg_bam_e)
-			end)
-			var_0_78.aim_hit:set(function(arg_bah_e)
-				var_0_61(arg_bar_0.on_hit, arg_bah_e)
-			end)
-			var_0_78.shutdown:set(function()
-				local var_bar_enemies = var_0_36.get_players(true)
-				if var_bar_enemies then
-					for iter_bar_0, iter_bar_1 in var_0_9(var_bar_enemies) do
-						plist.set(iter_bar_1, "Override prefer body aim", "-")
-						plist.set(iter_bar_1, "Override safe point", "-")
-					end
-				end
-			end)
-		end
-	}
 
 	var_282_12.helpers = {
 		sp_ovr = false,
