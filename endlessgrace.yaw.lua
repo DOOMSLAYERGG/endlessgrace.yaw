@@ -2486,16 +2486,12 @@ LPH_NO_VIRTUALIZE(function()
 				"add",
 				"l"
 			}, var_155_12:slider("\f<z>addyawl", -60, 60, 0, true, "°"))
-			local var_add_rl = var_155_6({
-				var_155_8,
-				"add",
-				"rndl"
-			}, var_155_12:checkbox("\f<p>Random left\f<z>addrndlon"))
+			local var_add_rl = var_155_12:hotkey("\f<z>addrndlon", true, 0)
 			local var_add_pl = var_155_6({
 				var_155_8,
 				"add",
 				"lr"
-			}, var_155_12:slider("\f<p>Amount\f<z>addrndl", 0, 64, 0, true, "%")):depend({
+			}, var_155_12:slider("\f<p>Left random\f<z>addrndl", 0, 64, 0, true, "%")):depend({
 				var_add_rl,
 				true
 			})
@@ -2504,16 +2500,12 @@ LPH_NO_VIRTUALIZE(function()
 				"add",
 				"r"
 			}, var_155_12:slider("\f<z>addyawr", -60, 60, 0, true, "°"))
-			local var_add_rr = var_155_6({
-				var_155_8,
-				"add",
-				"rndr"
-			}, var_155_12:checkbox("\f<p>Random right\f<z>addrndron"))
+			local var_add_rr = var_155_12:hotkey("\f<z>addrndron", true, 0)
 			local var_add_pr = var_155_6({
 				var_155_8,
 				"add",
 				"rr"
-			}, var_155_12:slider("\f<p>Amount\f<z>addrndr", 0, 64, 0, true, "%")):depend({
+			}, var_155_12:slider("\f<p>Right random\f<z>addrndr", 0, 64, 0, true, "%")):depend({
 				var_add_rr,
 				true
 			})
@@ -3751,6 +3743,7 @@ LPH_JIT_MAX(function()
 		var_223_2 = var_223_0[var_0_108.states[var_223_2][1]].override and var_223_2 or var_0_109.states.default
 		var_221_1 = {
 			[0] = var_223_0,
+			key = var_0_108.states[var_223_2][1],
 			cur = var_223_0[var_0_108.states[var_223_2][1]]
 		}
 	end
@@ -4535,7 +4528,14 @@ LPH_JIT_MAX(function()
 				local var_add_0 = var_221_3.des > 0
 				local var_add_1 = var_add_0 and var_221_1.cur.add.r or var_221_1.cur.add.l
 
-				if var_add_0 and var_221_1.cur.add.rndr or not var_add_0 and var_221_1.cur.add.rndl then
+				local var_add_e = var_221_1.key and var_0_127.antiaim.builder[var_221_1.key]
+				local var_add_h
+
+				if var_add_e and var_add_e.add then
+					var_add_h = var_add_0 and var_add_e.add.rndr or var_add_e.add.rndl
+				end
+
+				if var_add_h and var_add_h:get() then
 					local var_add_2 = var_add_0 and var_221_1.cur.add.rr or var_221_1.cur.add.lr
 
 					if var_add_2 and var_add_2 > 0 then
