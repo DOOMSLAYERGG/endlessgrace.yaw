@@ -2227,11 +2227,50 @@ LPH_NO_VIRTUALIZE(function()
 				}, true
 			end),
 			dynhc = var_155_4.feature(var_155_5.angles:checkbox("Dynamic hitchance"), function()
-				return {
-					mode = var_155_5.angles:combobox("\f<p>Curve", {
+				local var_dh_weapons = {
+					"Global",
+					"Scout",
+					"AWP",
+					"Auto",
+					"Pistols",
+					"Heavy pistols",
+					"SMGs",
+					"Rifles",
+					"Shotguns",
+					"LMGs"
+				}
+				local var_dh_tab = var_155_5.angles:combobox("\f<p>Weapon", var_dh_weapons)
+				local var_dh_cfg = {}
+				for iter_dh_0, iter_dh_1 in var_0_9(var_dh_weapons) do
+					local var_dh_id = var_0_32.lower(var_0_32.gsub(iter_dh_1, " ", "_"))
+					local var_dh_en
+					if iter_dh_1 ~= "Global" then
+						var_dh_en = var_155_5.angles:checkbox(var_0_32.format("\f<p>Enable %s", iter_dh_1))
+						var_dh_en:depend({ var_dh_tab, iter_dh_1 })
+					end
+					local var_dh_mode = var_155_5.angles:combobox(var_0_32.format("\f<p>%s curve", iter_dh_1), {
 						"Farther = lower",
 						"Farther = higher"
 					})
+					var_dh_mode:depend({ var_dh_tab, iter_dh_1 })
+					if var_dh_en then var_dh_mode:depend({ var_dh_en }) end
+					local var_dh_close = var_155_5.angles:slider(var_0_32.format("\f<p>%s close HC", iter_dh_1), 1, 100, 0, true, "%")
+					var_dh_close:depend({ var_dh_tab, iter_dh_1 })
+					if var_dh_en then var_dh_close:depend({ var_dh_en }) end
+					local var_dh_far = var_155_5.angles:slider(var_0_32.format("\f<p>%s far HC", iter_dh_1), 1, 100, 0, true, "%")
+					var_dh_far:depend({ var_dh_tab, iter_dh_1 })
+					if var_dh_en then var_dh_far:depend({ var_dh_en }) end
+					var_dh_cfg[var_dh_id] = {
+						on = var_dh_en,
+						mode = var_dh_mode,
+						close = var_dh_close,
+						far = var_dh_far
+					}
+				end
+				return {
+					tab = var_dh_tab,
+					weapons = var_dh_cfg,
+					mode = var_dh_cfg.global.mode
 				}, true
 			end),
 			recharge = var_155_5.angles:checkbox("Allow force recharge"),
@@ -5790,26 +5829,36 @@ LPH_NO_VIRTUALIZE(function()
 		end
 	}
 
-	local function var_dh_range(arg_cn_0)
+	local function var_dh_wgroup(arg_cn_0)
 		local var_cn_0 = arg_cn_0 or ""
-
-		if var_cn_0 == "CWeaponSSG08" or var_cn_0 == "CWeaponAWP" then
-			return 75, 45
+		if var_cn_0 == "CWeaponSSG08" then
+			return "scout"
+		elseif var_cn_0 == "CWeaponAWP" then
+			return "awp"
 		elseif var_cn_0 == "CWeaponG3SG1" or var_cn_0 == "CWeaponSCAR20" then
-			return 62, 40
+			return "auto"
 		elseif var_cn_0 == "CDEagle" or var_cn_0 == "CWeaponRevolver" then
-			return 55, 33
-		elseif var_0_32.find(var_cn_0, "Nova") or var_0_32.find(var_cn_0, "XM1014") or var_0_32.find(var_cn_0, "Mag7") or var_0_32.find(var_cn_0, "Sawedoff") then
-			return 60, 18
+			return "heavy_pistols"
 		elseif var_0_32.find(var_cn_0, "Glock") or var_0_32.find(var_cn_0, "P2000") or var_0_32.find(var_cn_0, "Usp") or var_0_32.find(var_cn_0, "USP") or var_0_32.find(var_cn_0, "P250") or var_0_32.find(var_cn_0, "FiveSeven") or var_0_32.find(var_cn_0, "Tec9") or var_0_32.find(var_cn_0, "CZ75") or var_0_32.find(var_cn_0, "Elite") then
-			return 46, 26
+			return "pistols"
+		elseif var_0_32.find(var_cn_0, "Nova") or var_0_32.find(var_cn_0, "XM1014") or var_0_32.find(var_cn_0, "Mag7") or var_0_32.find(var_cn_0, "Sawedoff") then
+			return "shotguns"
 		elseif var_0_32.find(var_cn_0, "Mp9") or var_0_32.find(var_cn_0, "MP9") or var_0_32.find(var_cn_0, "Mac10") or var_0_32.find(var_cn_0, "Mp7") or var_0_32.find(var_cn_0, "MP7") or var_0_32.find(var_cn_0, "Ump45") or var_0_32.find(var_cn_0, "P90") or var_0_32.find(var_cn_0, "Bizon") or var_0_32.find(var_cn_0, "Mp5") or var_0_32.find(var_cn_0, "MP5") then
-			return 46, 28
+			return "smgs"
 		elseif var_0_32.find(var_cn_0, "M249") or var_0_32.find(var_cn_0, "Negev") then
-			return 46, 26
+			return "lmgs"
 		end
+		return "rifles"
+	end
 
-		return 55, 33
+	local function var_dh_get_cfg(arg_dh_cn)
+		local var_dh_w = var_0_127.rage.dynhc.weapons
+		local var_dh_g = var_dh_wgroup(arg_dh_cn)
+		local var_dh_s = var_dh_w[var_dh_g]
+		if var_dh_s and var_dh_s.on and var_dh_s.on.value then
+			return var_dh_s
+		end
+		return var_dh_w.global
 	end
 
 	var_282_12.helpers = {
@@ -5826,10 +5875,15 @@ LPH_NO_VIRTUALIZE(function()
 				if var_0_127.rage.jumpscout.value and var_h_cn == "CWeaponSSG08" and var_0_36.get_prop(var_0_113.self, "m_bIsScoped") == 1 and not var_0_113.on_ground then
 					var_h_hc = var_0_31.round(55 - 22 * (var_h_d / 1350))
 				elseif var_0_127.rage.dynhc.on.value then
-					local var_h_close, var_h_far = var_dh_range(var_h_cn)
+					local var_h_cfg = var_dh_get_cfg(var_h_cn)
+					local var_h_close = var_h_cfg.close:get()
+					local var_h_far = var_h_cfg.far:get()
+					if var_h_close == 0 or var_h_far == 0 then
+						var_h_close, var_h_far = var_h_close, var_h_far
+					end
 					local var_h_t = var_h_d / 1350
 
-					if var_0_127.rage.dynhc.mode.value == "Farther = higher" then
+					if var_h_cfg.mode.value == "Farther = higher" then
 						var_h_hc = var_0_31.round(var_h_far + (var_h_close - var_h_far) * var_h_t)
 					else
 						var_h_hc = var_0_31.round(var_h_close - (var_h_close - var_h_far) * var_h_t)
