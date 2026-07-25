@@ -3044,28 +3044,23 @@ LPH_NO_VIRTUALIZE(function()
 			local var_dh_en
 			if iter_dh_1 ~= "Global" then
 				var_dh_en = var_155_5.angles:checkbox(var_0_32.format("\f<p>Enable %s", iter_dh_1))
-				var_dh_en:depend({ var_dh_parent.on })
-				var_dh_en:depend({ var_dh_parent.tab, iter_dh_1 })
-				var_dh_en:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" })
+				var_dh_en:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 })
 			end
 			local var_dh_mode = var_155_5.angles:combobox(var_0_32.format("\f<p>%s curve", iter_dh_1), {
 				"Farther = lower",
 				"Farther = higher"
 			})
-			var_dh_mode:depend({ var_dh_parent.on })
-			var_dh_mode:depend({ var_dh_parent.tab, iter_dh_1 })
-			var_dh_mode:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" })
-			if var_dh_en then var_dh_mode:depend({ var_dh_en }) end
 			local var_dh_close = var_155_5.angles:slider(var_0_32.format("\f<p>%s close HC", iter_dh_1), 1, 100, 55, true, "%")
-			var_dh_close:depend({ var_dh_parent.on })
-			var_dh_close:depend({ var_dh_parent.tab, iter_dh_1 })
-			var_dh_close:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" })
-			if var_dh_en then var_dh_close:depend({ var_dh_en }) end
 			local var_dh_far = var_155_5.angles:slider(var_0_32.format("\f<p>%s far HC", iter_dh_1), 1, 100, 33, true, "%")
-			var_dh_far:depend({ var_dh_parent.on })
-			var_dh_far:depend({ var_dh_parent.tab, iter_dh_1 })
-			var_dh_far:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" })
-			if var_dh_en then var_dh_far:depend({ var_dh_en }) end
+			if var_dh_en then
+				var_dh_mode:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 }, { var_dh_en })
+				var_dh_close:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 }, { var_dh_en })
+				var_dh_far:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 }, { var_dh_en })
+			else
+				var_dh_mode:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 })
+				var_dh_close:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 })
+				var_dh_far:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 })
+			end
 			var_dh_wcfg[var_dh_id] = {
 				on = var_dh_en,
 				mode = var_dh_mode,
