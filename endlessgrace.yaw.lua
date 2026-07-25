@@ -2406,6 +2406,27 @@ LPH_NO_VIRTUALIZE(function()
 					"Crouching",
 					"Weapon change"
 				}),
+				var_155_4.space(var_155_5.other),
+				var_155_4.header(var_155_5.other, "Flick Settings"),
+				flick = var_155_4.feature(var_155_5.other:hotkey("Fake flick", true, 0), function()
+					return {
+						pitch = var_155_5.other:combobox("\f<p>Pitch\f<z>flp", {
+							"Off",
+							"Static",
+							"Jitter",
+							"Spin",
+							"Spin[MOD]",
+							"Random",
+							"Random Ticks"
+						}),
+						static = var_155_5.other:slider("\f<p>Angle\f<z>fls", -89, 89, 0, true, "°", 1),
+						ang1 = var_155_5.other:slider("\f<p>Angle 1\f<z>fl1", -89, 89, 0, true, "°", 1),
+						ang2 = var_155_5.other:slider("\f<p>Angle 2\f<z>fl2", -89, 89, 0, true, "°", 1),
+						speed = var_155_5.other:slider("\f<p>Angle Speed\f<z>fsp", -50, 50, 20, true, " ", 0.1),
+						jspeed = var_155_5.other:slider("\f<p>Speed Ticks\f<z>fjt", 2, 14, 2, true, "t", 1, {[2] = " "}),
+						rspeed = var_155_5.other:slider("\f<p>Speed\f<z>frs", 0, 10, 0, true, " ", 0.1)
+					}, true
+				end),
 				setup = {
 					var_155_4.header(var_155_5.angles, "Defensive setup"),
 					selector = var_155_5.angles:combobox("\nstateselector", var_0_30.distribute(var_0_108.snaps, 2), nil, false),
@@ -3069,6 +3090,24 @@ LPH_NO_VIRTUALIZE(function()
 
 	var_155_21 = nil
 
+	do
+		local var_fl_d = var_0_127.antiaim.def.flick
+		if var_fl_d then
+			local var_fl_base = {
+				{var_0_128.selector, "Anti-aim"},
+				{var_0_127.antiaim.on, true},
+				{var_0_127.antiaim.tab, "Defensive"},
+				{var_fl_d.on, true}
+			}
+			var_fl_d.pitch:depend(var_0_25(var_fl_base))
+			var_fl_d.static:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Static"})
+			var_fl_d.ang1:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
+			var_fl_d.ang2:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
+			var_fl_d.speed:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Spin", "Spin[MOD]"})
+			var_fl_d.jspeed:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Jitter"})
+			var_fl_d.rspeed:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Random"})
+		end
+	end
 
 	var_0_127.visuals.accent:set_callback(function(arg_195_0)
 		local var_195_0, var_195_1, var_195_2 = var_0_25(arg_195_0.value)
@@ -4386,12 +4425,54 @@ LPH_JIT_MAX(function()
 			end
 		}
 	}
+	local var_221_flick = {
+		dele = false,
+		work = function(arg_flk_0)
+			local var_flk_el = var_0_127.antiaim.def.flick
+			if not var_flk_el or not var_flk_el.value then
+				return
+			end
+
+			var_221_0.force_defensive = true
+
+			local var_flk_pt = var_flk_el.pitch and var_flk_el.pitch.value or "Off"
+			if var_flk_pt ~= "Off" then
+				local var_flk_p = 0
+
+				if var_flk_pt == "Static" then
+					var_flk_p = var_flk_el.static.value
+				elseif var_flk_pt == "Jitter" then
+					if var_0_38.tickcount() % (var_flk_el.jspeed.value or 2) == 0 then
+						arg_flk_0.dele = not arg_flk_0.dele
+					end
+					var_flk_p = arg_flk_0.dele and var_flk_el.ang1.value or var_flk_el.ang2.value
+				elseif var_flk_pt == "Random" then
+					var_flk_p = var_0_34.random_int(var_flk_el.ang1.value, var_flk_el.ang2.value)
+				elseif var_flk_pt == "Spin" then
+					var_flk_p = var_0_31.lerp(var_flk_el.ang1.value, var_flk_el.ang2.value, var_0_38.curtime() * (var_flk_el.speed.value or 20) * 0.1 % 1)
+				elseif var_flk_pt == "Spin[MOD]" then
+					var_flk_p = var_flk_el.ang1.value + (var_flk_el.ang2.value - var_flk_el.ang1.value) * var_0_31.abs(var_0_31.sin(var_0_38.curtime() * (var_flk_el.speed.value or 20) * 0.05))
+				elseif var_flk_pt == "Random Ticks" then
+					local var_flk_tc = var_0_38.tickcount() % 3
+					var_flk_p = var_flk_tc == 0 and 89 or var_flk_tc == 1 and 0 or -89
+				end
+
+				var_221_3.pitch = var_flk_p
+			end
+
+			var_221_3.yaw = 180
+			var_221_3.des = var_221_2.switch and 60 or -60
+			var_221_4.no_modifier = true
+			var_221_4.no_offset = true
+		end
+	}
 	local var_221_15 = {
 		work = function()
 			var_221_14.angles:work()
 			var_221_14.modifier:work()
 			var_221_14.desync:work()
 			var_221_14.defensive:work()
+			var_221_flick:work()
 			var_221_14.head:work()
 			var_221_14.stab:work()
 			var_221_14.use_aa:work()
