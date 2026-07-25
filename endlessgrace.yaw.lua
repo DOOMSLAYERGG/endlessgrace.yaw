@@ -3100,14 +3100,14 @@ LPH_NO_VIRTUALIZE(function()
 			local var_fl_s = {var_0_128.selector, "Anti-aim"}
 			local var_fl_on = {var_0_127.antiaim.on, true}
 			local var_fl_t = {var_0_127.antiaim.tab, "General"}
-			local var_fl_h = {var_fl_d.on, true}
-			var_fl_d.pitch:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h)
-			var_fl_d.static:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Static"})
-			var_fl_d.ang1:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
-			var_fl_d.ang2:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
-			var_fl_d.speed:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Spin", "Spin[MOD]"})
-			var_fl_d.jspeed:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Jitter"})
-			var_fl_d.rspeed:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Random"})
+			var_fl_d.on:depend(var_fl_s, var_fl_on, var_fl_t)
+			var_fl_d.pitch:depend(var_fl_s, var_fl_on, var_fl_t)
+			var_fl_d.static:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Static"})
+			var_fl_d.ang1:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
+			var_fl_d.ang2:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
+			var_fl_d.speed:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Spin", "Spin[MOD]"})
+			var_fl_d.jspeed:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Jitter"})
+			var_fl_d.rspeed:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Random"})
 		end
 	end
 
@@ -4432,7 +4432,7 @@ LPH_JIT_MAX(function()
 		active = false,
 		work = function(arg_flk_0)
 			local var_flk_el = var_0_127.antiaim.flick
-			arg_flk_0.active = var_flk_el and var_flk_el.on and var_flk_el.on.value
+			arg_flk_0.active = var_flk_el ~= nil and var_flk_el.on ~= nil and var_flk_el.on:get()
 			if not arg_flk_0.active then
 				return
 			end
