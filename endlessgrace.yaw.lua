@@ -4431,13 +4431,17 @@ LPH_JIT_MAX(function()
 	}
 	local var_221_flick = {
 		dele = false,
+		active = false,
 		work = function(arg_flk_0)
 			local var_flk_el = var_0_127.antiaim.flick
-			if not var_flk_el or not var_flk_el.value then
+			arg_flk_0.active = var_flk_el and var_flk_el.on and var_flk_el.on.value
+			if not arg_flk_0.active then
 				return
 			end
 
-			var_221_0.force_defensive = true
+			if (var_221_0.command_number or 0) % 7 == 0 then
+				var_221_0.force_defensive = true
+			end
 
 			local var_flk_pt = var_flk_el.pitch and var_flk_el.pitch.value or "Off"
 			if var_flk_pt ~= "Off" then
@@ -4446,7 +4450,7 @@ LPH_JIT_MAX(function()
 				if var_flk_pt == "Static" then
 					var_flk_p = var_flk_el.static.value
 				elseif var_flk_pt == "Jitter" then
-					if var_0_38.tickcount() % (var_flk_el.jspeed.value or 2) == 0 then
+					if var_0_38.tickcount() % (var_flk_el.jspeed and var_flk_el.jspeed.value or 2) == 1 then
 						arg_flk_0.dele = not arg_flk_0.dele
 					end
 					var_flk_p = arg_flk_0.dele and var_flk_el.ang1.value or var_flk_el.ang2.value
@@ -4464,10 +4468,13 @@ LPH_JIT_MAX(function()
 				var_221_3.pitch = var_flk_p
 			end
 
-			var_221_3.yaw = 180
-			var_221_3.des = var_221_2.switch and 60 or -60
-			var_221_4.no_modifier = true
-			var_221_4.no_offset = true
+			if var_0_113.exploit.defensive then
+				var_221_3.yaw = 180
+				var_221_3.des = 60
+				var_221_4.no_modifier = true
+				var_221_4.no_offset = true
+				var_221_4.force_desync = 60
+			end
 		end
 	}
 	local var_221_15 = {
@@ -4660,6 +4667,10 @@ LPH_JIT_MAX(function()
 			end
 
 			return false
+		end
+
+		if var_221_flick.active and var_0_113.exploit.defensive then
+			return 1
 		end
 
 		local var_ed_2 = var_ed_0.dswitch
