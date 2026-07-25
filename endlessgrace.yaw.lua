@@ -2698,9 +2698,9 @@ LPH_NO_VIRTUALIZE(function()
 			local var_dh_en = var_dh_d[var_dh_id .. "_on"]
 			if var_dh_en then
 				var_dh_en:depend({ var_dh_d.tab, iter_dh_1 })
-				var_dh_d[var_dh_id .. "_mode"]:depend({ var_dh_d.tab, iter_dh_1 }, { var_dh_en })
-				var_dh_d[var_dh_id .. "_close"]:depend({ var_dh_d.tab, iter_dh_1 }, { var_dh_en })
-				var_dh_d[var_dh_id .. "_far"]:depend({ var_dh_d.tab, iter_dh_1 }, { var_dh_en })
+				var_dh_d[var_dh_id .. "_mode"]:depend({ var_dh_d.tab, iter_dh_1 }, { var_dh_en, true })
+				var_dh_d[var_dh_id .. "_close"]:depend({ var_dh_d.tab, iter_dh_1 }, { var_dh_en, true })
+				var_dh_d[var_dh_id .. "_far"]:depend({ var_dh_d.tab, iter_dh_1 }, { var_dh_en, true })
 			else
 				var_dh_d[var_dh_id .. "_mode"]:depend({ var_dh_d.tab, iter_dh_1 })
 				var_dh_d[var_dh_id .. "_close"]:depend({ var_dh_d.tab, iter_dh_1 })
