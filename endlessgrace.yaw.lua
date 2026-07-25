@@ -1,5 +1,5 @@
 local var_0_0 = "endlessgrace.yaw"
-local var_0_1 = "2.1488"
+local var_0_1 = "8.8"
 local var_0_2 = true
 local var_0_3 = defer
 local var_0_4 = error
@@ -2164,7 +2164,7 @@ LPH_NO_VIRTUALIZE(function()
 		var_155_4.header(var_155_5.fakelag),
 		home = {
 			info = {
-				user = var_155_5.fakelag:label(var_0_32.format("Welcome, \v%s", "gondon")),
+				user = var_155_5.fakelag:label(var_0_32.format("Welcome, \v%s", var_0_36.get_player_name(var_0_36.get_local_player()) or var_0_65.user)),
 				version = var_155_5.fakelag:label(var_0_32.format("Version: \v%s", var_0_65.version))
 			},
 			config = {
@@ -4656,21 +4656,21 @@ LPH_NO_VIRTUALIZE(function()
 		last = 0,
 		enabled = false,
 		list = {
-			"Я ЛОХ",
-			"GOVNO.LUA",
-			"ENDLESSGRACE CUSTOM",
-			"ENDLESSGRACE CUSTOM",
-			"ENDLESSGRACE CUSTOM",
-			"HYISTERIA",
-			"CUSTOM",
-			"Я ЛОХ",
-			"gondon",
-			"gondon",
-			"ENDLESSGRACE 2.1488",
-			"ENDLESSGRACE 2.1488",
-			"ENDLESSGRACE",
-			"CUSTOM",
-			"gondonio"
+			"ᴇ",
+			"ᴇɴ",
+			"ᴇɴᴅ",
+			"ᴇɴᴅʟ",
+			"ᴇɴᴅʟᴇ",
+			"ᴇɴᴅʟᴇs",
+			"ᴇɴᴅʟᴇss",
+			"ᴇɴᴅʟᴇss",
+			"ᴇɴᴅʟᴇss",
+			"ᴇɴᴅʟᴇs",
+			"ᴇɴᴅʟᴇ",
+			"ᴇɴᴅʟ",
+			"ᴇɴᴅ",
+			"ᴇɴ",
+			"ᴇ"
 		},
 		work = function()
 			if var_282_0.clantag.enabled and not var_0_127.misc.clantag.value then
