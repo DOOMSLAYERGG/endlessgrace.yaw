@@ -3097,19 +3097,17 @@ LPH_NO_VIRTUALIZE(function()
 	do
 		local var_fl_d = var_0_127.antiaim.flick
 		if var_fl_d then
-			local var_fl_base = {
-				{var_0_128.selector, "Anti-aim"},
-				{var_0_127.antiaim.on, true},
-				{var_0_127.antiaim.tab, "General"},
-				{var_fl_d.on, true}
-			}
-			var_fl_d.pitch:depend(var_0_25(var_fl_base))
-			var_fl_d.static:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Static"})
-			var_fl_d.ang1:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
-			var_fl_d.ang2:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
-			var_fl_d.speed:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Spin", "Spin[MOD]"})
-			var_fl_d.jspeed:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Jitter"})
-			var_fl_d.rspeed:depend(var_0_25(var_fl_base), {var_fl_d.pitch, "Random"})
+			local var_fl_s = {var_0_128.selector, "Anti-aim"}
+			local var_fl_on = {var_0_127.antiaim.on, true}
+			local var_fl_t = {var_0_127.antiaim.tab, "General"}
+			local var_fl_h = {var_fl_d.on, true}
+			var_fl_d.pitch:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h)
+			var_fl_d.static:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Static"})
+			var_fl_d.ang1:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
+			var_fl_d.ang2:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Jitter", "Spin", "Spin[MOD]", "Random"})
+			var_fl_d.speed:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Spin", "Spin[MOD]"})
+			var_fl_d.jspeed:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Jitter"})
+			var_fl_d.rspeed:depend(var_fl_s, var_fl_on, var_fl_t, var_fl_h, {var_fl_d.pitch, "Random"})
 		end
 	end
 
