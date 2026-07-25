@@ -3983,11 +3983,44 @@ LPH_JIT_MAX(function()
 				0,
 				1
 			},
-			Jitter = function(arg_231_0)
-				return var_221_2.switch and arg_231_0.deg or -arg_231_0.deg
+			Jitter = function(arg_231_0, arg_231_1)
+				local var_231_0 = arg_231_0.deg * var_0_31.random(0.7, 1)
+
+				return var_221_2.switch and var_231_0 or -var_231_0
 			end,
-			Ways = function(arg_232_0)
-				local var_232_0 = var_221_2.counter % arg_232_0.ways / (arg_232_0.ways - 1)
+			Ways = function(arg_232_0, arg_232_1)
+				local var_232_1 = arg_232_0.ways
+
+				if var_232_1 < 2 then
+					return 0
+				end
+
+				local var_232_2 = var_221_2.counter % var_232_1
+				local var_232_3 = arg_232_1._ways
+
+				if not var_232_3 or arg_232_1._ways_n ~= var_232_1 then
+					var_232_3 = {}
+
+					for iter_232_0 = 1, var_232_1 do
+						var_232_3[iter_232_0] = iter_232_0 - 1
+					end
+
+					arg_232_1._ways = var_232_3
+					arg_232_1._ways_n = var_232_1
+					arg_232_1._ways_last = -1
+				end
+
+				if var_232_2 == 0 and arg_232_1._ways_last ~= 0 then
+					for iter_232_1 = var_232_1, 2, -1 do
+						local var_232_4 = var_0_34.random_int(1, iter_232_1)
+
+						var_232_3[iter_232_1], var_232_3[var_232_4] = var_232_3[var_232_4], var_232_3[iter_232_1]
+					end
+				end
+
+				arg_232_1._ways_last = var_232_2
+
+				local var_232_0 = var_232_3[var_232_2 + 1] / (var_232_1 - 1)
 
 				return var_0_31.lerp(-arg_232_0.deg, arg_232_0.deg, side == -1 and 1 - var_232_0 or var_232_0)
 			end,
