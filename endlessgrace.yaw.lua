@@ -3984,6 +3984,10 @@ LPH_JIT_MAX(function()
 				1
 			},
 			Jitter = function(arg_231_0, arg_231_1)
+				if var_0_127.antiaim.general.mode.value == "gamesense" then
+					return var_221_2.switch and arg_231_0.deg or -arg_231_0.deg
+				end
+
 				local var_231_0 = var_221_2.switch
 
 				if arg_231_1._jit_sw ~= var_231_0 then
@@ -3996,6 +4000,12 @@ LPH_JIT_MAX(function()
 				return var_231_0 and var_231_1 or -var_231_1
 			end,
 			Ways = function(arg_232_0, arg_232_1)
+				if var_0_127.antiaim.general.mode.value == "gamesense" then
+					local var_232_g = var_221_2.counter % arg_232_0.ways / (arg_232_0.ways - 1)
+
+					return var_0_31.lerp(-arg_232_0.deg, arg_232_0.deg, side == -1 and 1 - var_232_g or var_232_g)
+				end
+
 				local var_232_1 = arg_232_0.ways
 
 				if var_232_1 < 2 then
@@ -4062,6 +4072,10 @@ LPH_JIT_MAX(function()
 				return var_234_2
 			end,
 			Rotate = function(arg_235_0, arg_235_1)
+				if var_0_127.antiaim.general.mode.value == "gamesense" then
+					return var_0_31.lerp(-arg_235_0.deg, arg_235_0.deg, var_0_38.curtime() * 4 % 1)
+				end
+
 				local var_235_0 = arg_235_0.deg
 
 				if var_235_0 <= 0 then
@@ -4085,6 +4099,10 @@ LPH_JIT_MAX(function()
 				return var_235_1
 			end,
 			Random = function(arg_236_0, arg_236_1)
+				if var_0_127.antiaim.general.mode.value == "gamesense" then
+					return var_0_34.random_int(-arg_236_0.deg, arg_236_0.deg)
+				end
+
 				local var_236_0 = arg_236_0.deg
 
 				if var_236_0 <= 0 then
