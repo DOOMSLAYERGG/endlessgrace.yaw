@@ -2382,29 +2382,31 @@ LPH_NO_VIRTUALIZE(function()
 						}),
 						limit = var_155_5.angles:slider("\nflLimit", 1, 15, 14, true, "t")
 					}, true
-				end),
-				var_155_4.space(var_155_5.other),
-				var_155_4.header(var_155_5.other, "Flick Settings"),
-				flick = var_155_4.feature(var_155_5.other:hotkey("Fake flick", true, 0), function()
-					return {
-						pitch = var_155_5.other:combobox("\f<p>Pitch\f<z>flp", {
-							"Off",
-							"Static",
-							"Jitter",
-							"Spin",
-							"Spin[MOD]",
-							"Random",
-							"Random Ticks"
-						}),
-						static = var_155_5.other:slider("\f<p>Angle\f<z>fls", -89, 89, 0, true, "°", 1),
-						ang1 = var_155_5.other:slider("\f<p>Angle 1\f<z>fl1", -89, 89, 0, true, "°", 1),
-						ang2 = var_155_5.other:slider("\f<p>Angle 2\f<z>fl2", -89, 89, 0, true, "°", 1),
-						speed = var_155_5.other:slider("\f<p>Angle Speed\f<z>fsp", -50, 50, 20, true, " ", 0.1),
-						jspeed = var_155_5.other:slider("\f<p>Speed Ticks\f<z>fjt", 2, 14, 2, true, "t", 1, {[2] = " "}),
-						rspeed = var_155_5.other:slider("\f<p>Speed\f<z>frs", 0, 10, 0, true, " ", 0.1)
-					}, true
 				end)
 			},
+			flick_header = {
+				var_155_4.space(var_155_5.other),
+				var_155_4.header(var_155_5.other, "Flick Settings")
+			},
+			flick = var_155_4.feature(var_155_5.other:hotkey("Fake flick", true, 0), function()
+				return {
+					pitch = var_155_5.other:combobox("\f<p>Pitch\f<z>flp", {
+						"Off",
+						"Static",
+						"Jitter",
+						"Spin",
+						"Spin[MOD]",
+						"Random",
+						"Random Ticks"
+					}),
+					static = var_155_5.other:slider("\f<p>Angle\f<z>fls", -89, 89, 0, true, "°", 1),
+					ang1 = var_155_5.other:slider("\f<p>Angle 1\f<z>fl1", -89, 89, 0, true, "°", 1),
+					ang2 = var_155_5.other:slider("\f<p>Angle 2\f<z>fl2", -89, 89, 0, true, "°", 1),
+					speed = var_155_5.other:slider("\f<p>Angle Speed\f<z>fsp", -50, 50, 20, true, " ", 0.1),
+					jspeed = var_155_5.other:slider("\f<p>Speed Ticks\f<z>fjt", 2, 14, 2, true, "t", 1, {[2] = " "}),
+					rspeed = var_155_5.other:slider("\f<p>Speed\f<z>frs", 0, 10, 0, true, " ", 0.1)
+				}, true
+			end),
 			state = {
 				var_155_4.header(var_155_5.fakelag, "States builder"),
 				selector = var_155_5.fakelag:combobox("\nstateselector", var_0_30.distribute(var_0_108.states, 2), nil, false),
@@ -3070,7 +3072,9 @@ LPH_NO_VIRTUALIZE(function()
 		general = "General",
 		state = "Builder",
 		snaps = "Defensive",
-		builder = "Builder"
+		builder = "Builder",
+		flick = "General",
+		flick_header = "General"
 	}
 
 	var_0_44.traverse(var_0_127.antiaim, function(arg_194_0, arg_194_1)
@@ -3091,7 +3095,7 @@ LPH_NO_VIRTUALIZE(function()
 	var_155_21 = nil
 
 	do
-		local var_fl_d = var_0_127.antiaim.general.flick
+		local var_fl_d = var_0_127.antiaim.flick
 		if var_fl_d then
 			local var_fl_base = {
 				{var_0_128.selector, "Anti-aim"},
@@ -4428,7 +4432,7 @@ LPH_JIT_MAX(function()
 	local var_221_flick = {
 		dele = false,
 		work = function(arg_flk_0)
-			local var_flk_el = var_0_127.antiaim.general.flick
+			local var_flk_el = var_0_127.antiaim.flick
 			if not var_flk_el or not var_flk_el.value then
 				return
 			end
