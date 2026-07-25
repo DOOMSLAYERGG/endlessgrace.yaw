@@ -2390,7 +2390,7 @@ LPH_NO_VIRTUALIZE(function()
 			},
 			flick = {
 				on = var_155_5.other:hotkey("Fake flick", false, 0),
-				pitch = var_155_5.other:combobox("Pitch\f<z>flp", {
+				pitch = var_155_5.other:combobox("Pitch\nflp", {
 					"Off",
 					"Static",
 					"Jitter",
@@ -2399,12 +2399,12 @@ LPH_NO_VIRTUALIZE(function()
 					"Random",
 					"Random Ticks"
 				}),
-				static = var_155_5.other:slider("\f<p>Angle\f<z>fls", -89, 89, 0, true, "°", 1),
-				ang1 = var_155_5.other:slider("\f<p>Angle 1\f<z>fl1", -89, 89, 0, true, "°", 1),
-				ang2 = var_155_5.other:slider("\f<p>Angle 2\f<z>fl2", -89, 89, 0, true, "°", 1),
-				speed = var_155_5.other:slider("\f<p>Angle Speed\f<z>fsp", -50, 50, 20, true, " ", 0.1),
-				jspeed = var_155_5.other:slider("\f<p>Speed Ticks\f<z>fjt", 2, 14, 2, true, "t", 1, {[2] = " "}),
-				rspeed = var_155_5.other:slider("\f<p>Speed\f<z>frs", 0, 10, 0, true, " ", 0.1)
+				static = var_155_5.other:slider("\f<p>Angle\nfls", -89, 89, 0, true, "°", 1),
+				ang1 = var_155_5.other:slider("\f<p>Angle 1\nfl1", -89, 89, 0, true, "°", 1),
+				ang2 = var_155_5.other:slider("\f<p>Angle 2\nfl2", -89, 89, 0, true, "°", 1),
+				speed = var_155_5.other:slider("\f<p>Angle Speed\nfsp", -50, 50, 20, true, " ", 0.1),
+				jspeed = var_155_5.other:slider("\f<p>Speed Ticks\nfjt", 2, 14, 2, true, "t", 1, {[2] = " "}),
+				rspeed = var_155_5.other:slider("\f<p>Speed\nfrs", 0, 10, 0, true, " ", 0.1)
 			},
 			state = {
 				var_155_4.header(var_155_5.fakelag, "States builder"),
