@@ -5159,8 +5159,8 @@ LPH_NO_VIRTUALIZE(function()
 
 			var_282_10.invent("harm", var_307_6)
 		end,
-		harm = function(arg_308_0, arg_308_1, arg_308_2)
-			if not var_0_30.find(var_282_8, arg_308_0.weapon) and arg_308_0.weapon ~= "knife" then
+		harm = function(arg_308_0, arg_308_1, arg_308_2, arg_308_3)
+			if not arg_308_3 and not var_0_30.find(var_282_8, arg_308_0.weapon) and arg_308_0.weapon ~= "knife" then
 				return
 			end
 
@@ -5229,7 +5229,8 @@ LPH_NO_VIRTUALIZE(function()
 			if var_309_0 == var_0_113.self and var_0_127.misc.logs.events:get("Getting harmed") then
 				var_282_10.events.receive(arg_309_0, var_309_0, var_309_1)
 			elseif var_309_1 == var_0_113.self and var_309_0 ~= var_0_113.self and var_0_127.misc.logs.events:get("Harming enemies") then
-				var_282_10.events.harm(arg_309_0, var_309_0, var_309_1)
+				local var_309_2 = not var_0_30.find(var_282_8, arg_309_0.weapon) and arg_309_0.weapon ~= "knife"
+				var_282_10.events.harm(arg_309_0, var_309_0, var_309_1, var_309_2)
 			end
 		end,
 		miss = function(arg_310_0)
