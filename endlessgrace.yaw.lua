@@ -2179,6 +2179,10 @@ LPH_NO_VIRTUALIZE(function()
 				name = var_155_5.other:textbox("Name"),
 				create = var_155_5.other:button("Create"),
 				import = var_155_5.other:button("Import"),
+				operator = var_155_5.other:combobox("Anti-aim operator", {
+					"gamesense",
+					"endlessgrace"
+				}),
 				var_155_4.header(var_155_5.angles, "Your configs"),
 				list = var_155_5.angles:listbox("Configs", {
 					"Default"
@@ -2345,10 +2349,6 @@ LPH_NO_VIRTUALIZE(function()
 			}, nil, false),
 			general = {
 				var_155_4.header(var_155_5.angles, "General"),
-				mode = var_155_5.other:combobox("Anti-aim operator", {
-					"gamesense",
-					"endlessgrace"
-				}),
 				invert = var_155_5.angles:hotkey("Inverter", false, 0),
 				edge = var_155_5.angles:hotkey("Edge yaw", false, 0),
 				fs = var_155_4.feature(var_155_5.angles:checkbox("Freestanding", 0), function(arg_170_0)
@@ -3118,10 +3118,7 @@ LPH_NO_VIRTUALIZE(function()
 		})
 	end)
 
-	var_0_127.antiaim.general.mode:depend({
-		var_0_128.selector,
-		"Home"
-	})
+	var_0_127.antiaim.general.mode = var_0_128.home.config.operator
 
 	var_155_21 = nil
 
