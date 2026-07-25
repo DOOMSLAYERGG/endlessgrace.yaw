@@ -2495,7 +2495,7 @@ LPH_NO_VIRTUALIZE(function()
 				var_155_8,
 				"add",
 				"lr"
-			}, var_155_12:slider("\f<p>Left random\f<z>addrndl", 0, 64, 0, true, "%")):depend({
+			}, var_155_12:slider("\f<z>addrndl", 0, 64, 0, true, "%")):depend({
 				var_add_rl,
 				true
 			})
@@ -2513,7 +2513,7 @@ LPH_NO_VIRTUALIZE(function()
 				var_155_8,
 				"add",
 				"rr"
-			}, var_155_12:slider("\f<p>Right random\f<z>addrndr", 0, 64, 0, true, "%")):depend({
+			}, var_155_12:slider("\f<z>addrndr", 0, 64, 0, true, "%")):depend({
 				var_add_rr,
 				true
 			})
