@@ -2406,6 +2406,18 @@ LPH_NO_VIRTUALIZE(function()
 				jspeed = var_155_5.other:slider("\f<p>Speed Ticks\nfjt", 2, 14, 2, true, "t", 1, {[2] = " "}),
 				rspeed = var_155_5.other:slider("\f<p>Speed\nfrs", 0, 10, 0, true, " ", 0.1)
 			},
+			massive_header = {
+				var_155_4.space(var_155_5.other),
+				var_155_4.header(var_155_5.other, "Massive Fake")
+			},
+			massive = {
+				on = var_155_5.other:hotkey("Massive fake", false, 0),
+				ticks = var_155_5.other:slider("\f<p>Shift ticks\nmvt", 16, 22, 18, true, "t", 1),
+				dt = var_155_5.other:combobox("\f<p>Double tap\nmvd", {
+					"Disable",
+					"Keep charged"
+				})
+			},
 			state = {
 				var_155_4.header(var_155_5.fakelag, "States builder"),
 				selector = var_155_5.fakelag:combobox("\nstateselector", var_0_30.distribute(var_0_108.states, 2), nil, false),
@@ -3073,7 +3085,9 @@ LPH_NO_VIRTUALIZE(function()
 		snaps = "Defensive",
 		builder = "Builder",
 		flick = "General",
-		flick_header = "General"
+		flick_header = "General",
+		massive = "General",
+		massive_header = "General"
 	}
 
 	var_0_44.traverse(var_0_127.antiaim, function(arg_194_0, arg_194_1)
@@ -3107,6 +3121,13 @@ LPH_NO_VIRTUALIZE(function()
 			var_fl_d.speed:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Spin", "Spin[MOD]"})
 			var_fl_d.jspeed:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Jitter"})
 			var_fl_d.rspeed:depend(var_fl_s, var_fl_on, var_fl_t, {var_fl_d.pitch, "Random"})
+
+			local var_mv_d = var_0_127.antiaim.massive
+			if var_mv_d then
+				var_mv_d.on:depend(var_fl_s, var_fl_on, var_fl_t)
+				var_mv_d.ticks:depend(var_fl_s, var_fl_on, var_fl_t)
+				var_mv_d.dt:depend(var_fl_s, var_fl_on, var_fl_t)
+			end
 		end
 	end
 
@@ -4474,6 +4495,64 @@ LPH_JIT_MAX(function()
 			end
 		end
 	}
+	local var_221_massive = {
+		overridden = false,
+		active = false,
+		work = function(arg_mv_0)
+			local var_mv_el = var_0_127.antiaim.massive
+			local var_mv_fl = var_0_107.aa.fakelag
+			local var_mv_ms = var_0_107.misc.settings.maxshift
+			local var_mv_dt = var_0_107.rage.aimbot.double_tap[1]
+			local var_mv_dtfl = var_0_107.rage.aimbot.dt_fl[1]
+
+			arg_mv_0.active = var_mv_el ~= nil and var_mv_el.on ~= nil and var_mv_el.on:get()
+
+			if arg_mv_0.active then
+				local var_mv_t = var_mv_el.ticks.value
+
+				var_mv_ms:override(var_mv_t)
+				var_0_61(function()
+					cvar.sv_maxusrcmdprocessticks:set_int(var_mv_t, true)
+				end)
+
+				var_mv_fl.enable:override(true)
+				var_mv_fl.amount:override("Maximum")
+				var_mv_fl.limit:override(var_mv_t - 1)
+				var_mv_fl.variance:override(0)
+
+				if var_mv_el.dt.value == "Disable" then
+					var_mv_dt:override(false)
+				else
+					var_mv_dtfl:override(var_mv_t - 1)
+				end
+
+				arg_mv_0.overridden = true
+			elseif arg_mv_0.overridden then
+				var_mv_ms:override()
+				var_mv_fl.enable:override()
+				var_mv_fl.amount:override()
+				var_mv_fl.limit:override()
+				var_mv_fl.variance:override()
+				var_mv_dt:override()
+				var_mv_dtfl:override()
+
+				var_0_61(function()
+					cvar.sv_maxusrcmdprocessticks:set_int(var_mv_ms.value or 16, true)
+				end)
+
+				arg_mv_0.overridden = false
+			end
+		end
+	}
+
+	var_0_78.shutdown:set(function()
+		if var_221_massive.overridden then
+			var_0_61(function()
+				cvar.sv_maxusrcmdprocessticks:set_int(16, true)
+			end)
+		end
+	end)
+
 	local var_221_15 = {
 		work = function()
 			var_221_14.angles:work()
@@ -4485,6 +4564,7 @@ LPH_JIT_MAX(function()
 			var_221_14.stab:work()
 			var_221_14.use_aa:work()
 			var_221_14.fl:work()
+			var_221_massive:work()
 
 			if var_221_4.no_snap then
 				var_221_3.snap = nil
