@@ -2485,7 +2485,7 @@ LPH_NO_VIRTUALIZE(function()
 				var_155_8,
 				"add",
 				"rndl"
-			}, var_155_12:checkbox("\f<p>Randomize left\f<z>addrndlon"))
+			}, var_155_12:checkbox("\f<z>addrndlon"))
 			local var_add_l = var_155_6({
 				var_155_8,
 				"add",
@@ -2503,7 +2503,7 @@ LPH_NO_VIRTUALIZE(function()
 				var_155_8,
 				"add",
 				"rndr"
-			}, var_155_12:checkbox("\f<p>Randomize right\f<z>addrndron"))
+			}, var_155_12:checkbox("\f<z>addrndron"))
 			local var_add_r = var_155_6({
 				var_155_8,
 				"add",
