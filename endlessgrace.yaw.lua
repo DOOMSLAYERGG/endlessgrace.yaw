@@ -5944,8 +5944,9 @@ LPH_NO_VIRTUALIZE(function()
 	end
 
 	function var_0_99.logo(arg_351_0, arg_351_1)
-		var_0_99.texture(var_0_102.logo_l, arg_351_0, arg_351_1, _AZAZI and 35 or 26, 15, var_0_91.accent)
-		var_0_99.texture(var_0_102.logo_r, arg_351_0 + (_AZAZI and 35 or 26), arg_351_1, _AZAZI and 35 or 24, 15, var_0_91.text)
+		var_0_99.text(arg_351_0, arg_351_1, var_0_91.accent, "-", nil, "endless")
+		local var_351_0 = var_0_99.measure_text("-", "endless")
+		var_0_99.text(arg_351_0 + var_351_0, arg_351_1, var_0_91.text, "-", nil, "grace")
 	end
 
 	function var_0_99.edge_v(arg_352_0, arg_352_1, arg_352_2, arg_352_3)
