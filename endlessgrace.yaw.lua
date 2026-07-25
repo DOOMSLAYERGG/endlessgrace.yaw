@@ -2226,7 +2226,8 @@ LPH_NO_VIRTUALIZE(function()
 					var_155_5.angles:label("\f<p>body aim while enabled")
 				}, true
 			end),
-			dynhc = var_155_4.feature(var_155_5.angles:checkbox("Dynamic hitchance"), function()
+			dynhc = (function()
+				local var_dh_on = var_155_5.angles:checkbox("Dynamic hitchance")
 				local var_dh_weapons = {
 					"Global",
 					"Scout",
@@ -2240,24 +2241,29 @@ LPH_NO_VIRTUALIZE(function()
 					"LMGs"
 				}
 				local var_dh_tab = var_155_5.angles:combobox("\f<p>Weapon", var_dh_weapons)
+				var_dh_tab:depend({ var_dh_on })
 				local var_dh_cfg = {}
 				for iter_dh_0, iter_dh_1 in var_0_9(var_dh_weapons) do
 					local var_dh_id = var_0_32.lower(var_0_32.gsub(iter_dh_1, " ", "_"))
 					local var_dh_en
 					if iter_dh_1 ~= "Global" then
 						var_dh_en = var_155_5.angles:checkbox(var_0_32.format("\f<p>Enable %s", iter_dh_1))
+						var_dh_en:depend({ var_dh_on })
 						var_dh_en:depend({ var_dh_tab, iter_dh_1 })
 					end
 					local var_dh_mode = var_155_5.angles:combobox(var_0_32.format("\f<p>%s curve", iter_dh_1), {
 						"Farther = lower",
 						"Farther = higher"
 					})
+					var_dh_mode:depend({ var_dh_on })
 					var_dh_mode:depend({ var_dh_tab, iter_dh_1 })
 					if var_dh_en then var_dh_mode:depend({ var_dh_en }) end
-					local var_dh_close = var_155_5.angles:slider(var_0_32.format("\f<p>%s close HC", iter_dh_1), 1, 100, 0, true, "%")
+					local var_dh_close = var_155_5.angles:slider(var_0_32.format("\f<p>%s close HC", iter_dh_1), 1, 100, 55, true, "%")
+					var_dh_close:depend({ var_dh_on })
 					var_dh_close:depend({ var_dh_tab, iter_dh_1 })
 					if var_dh_en then var_dh_close:depend({ var_dh_en }) end
-					local var_dh_far = var_155_5.angles:slider(var_0_32.format("\f<p>%s far HC", iter_dh_1), 1, 100, 0, true, "%")
+					local var_dh_far = var_155_5.angles:slider(var_0_32.format("\f<p>%s far HC", iter_dh_1), 1, 100, 33, true, "%")
+					var_dh_far:depend({ var_dh_on })
 					var_dh_far:depend({ var_dh_tab, iter_dh_1 })
 					if var_dh_en then var_dh_far:depend({ var_dh_en }) end
 					var_dh_cfg[var_dh_id] = {
@@ -2268,11 +2274,12 @@ LPH_NO_VIRTUALIZE(function()
 					}
 				end
 				return {
+					on = var_dh_on,
 					tab = var_dh_tab,
 					weapons = var_dh_cfg,
 					mode = var_dh_cfg.global.mode
-				}, true
-			end),
+				}
+			end)(),
 			recharge = var_155_5.angles:checkbox("Allow force recharge"),
 			resolver = var_155_4.private(var_155_5.angles:checkbox("Jitter resolver")),
 			peekfix = var_155_4.private(var_155_5.angles:checkbox("Early defensive"))
@@ -5878,9 +5885,6 @@ LPH_NO_VIRTUALIZE(function()
 					local var_h_cfg = var_dh_get_cfg(var_h_cn)
 					local var_h_close = var_h_cfg.close:get()
 					local var_h_far = var_h_cfg.far:get()
-					if var_h_close == 0 or var_h_far == 0 then
-						var_h_close, var_h_far = var_h_close, var_h_far
-					end
 					local var_h_t = var_h_d / 1350
 
 					if var_h_cfg.mode.value == "Farther = higher" then
