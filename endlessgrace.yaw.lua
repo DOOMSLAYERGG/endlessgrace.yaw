@@ -2165,7 +2165,14 @@ LPH_NO_VIRTUALIZE(function()
 		home = {
 			info = {
 				user = var_155_5.fakelag:label(var_0_32.format("Welcome, \v%s", var_0_36.get_player_name(var_0_36.get_local_player()) or var_0_65.user)),
-				version = var_155_5.fakelag:label(var_0_32.format("Version: \v%s", var_0_65.version))
+				version = var_155_5.fakelag:label(var_0_32.format("Version: \v%s", var_0_65.version)),
+				var_155_5.fakelag:label("\n"),
+				var_155_5.fakelag:label("\a9E9E9EFF\vНи один человек не может"),
+				var_155_5.fakelag:label("\a9E9E9EFF\vдолго быть двуликим: иметь"),
+				var_155_5.fakelag:label("\a9E9E9EFF\vодно лицо для себя, а другое —"),
+				var_155_5.fakelag:label("\a9E9E9EFF\vдля толпы; в конце концов он"),
+				var_155_5.fakelag:label("\a9E9E9EFF\vсам перестанет понимать,"),
+				var_155_5.fakelag:label("\a9E9E9EFF\vкакое из них подлинное.")
 			},
 			config = {
 				var_155_4.header(var_155_5.other, "New config"),
