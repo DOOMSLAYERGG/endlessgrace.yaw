@@ -3984,9 +3984,16 @@ LPH_JIT_MAX(function()
 				1
 			},
 			Jitter = function(arg_231_0, arg_231_1)
-				local var_231_0 = arg_231_0.deg * var_0_31.random(0.7, 1)
+				local var_231_0 = var_221_2.switch
 
-				return var_221_2.switch and var_231_0 or -var_231_0
+				if arg_231_1._jit_sw ~= var_231_0 then
+					arg_231_1._jit_sw = var_231_0
+					arg_231_1._jit_amp = arg_231_0.deg * var_0_31.random(0.82, 1)
+				end
+
+				local var_231_1 = arg_231_1._jit_amp or arg_231_0.deg
+
+				return var_231_0 and var_231_1 or -var_231_1
 			end,
 			Ways = function(arg_232_0, arg_232_1)
 				local var_232_1 = arg_232_0.ways
