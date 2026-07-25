@@ -2494,6 +2494,11 @@ LPH_NO_VIRTUALIZE(function()
 					"add",
 					"l"
 				}, var_155_12:slider("\f<z>addyawl", -60, 60, 0, true, "°")),
+				r = var_155_6({
+					var_155_8,
+					"add",
+					"r"
+				}, var_155_12:slider("\f<z>addyawr", -60, 60, 0, true, "°")),
 				lr = var_155_6({
 					var_155_8,
 					"add",
@@ -2502,11 +2507,6 @@ LPH_NO_VIRTUALIZE(function()
 					var_add_rnd,
 					true
 				}),
-				r = var_155_6({
-					var_155_8,
-					"add",
-					"r"
-				}, var_155_12:slider("\f<z>addyawr", -60, 60, 0, true, "°")),
 				rr = var_155_6({
 					var_155_8,
 					"add",
