@@ -2481,11 +2481,11 @@ LPH_NO_VIRTUALIZE(function()
 			"add",
 			"on"
 		}, var_155_12:checkbox("Add yaw left / right\f<z>")), function(arg_177_0)
-			local var_add_rl = var_155_6({
+			local var_add_rnd = var_155_6({
 				var_155_8,
 				"add",
-				"rndl"
-			}, var_155_12:checkbox("\f<z>addrndlon"))
+				"rnd"
+			}, var_155_12:checkbox("\f<z>addrnd"))
 			local var_add_l = var_155_6({
 				var_155_8,
 				"add",
@@ -2496,14 +2496,9 @@ LPH_NO_VIRTUALIZE(function()
 				"add",
 				"lr"
 			}, var_155_12:slider("\f<z>addrndl", 0, 64, 0, true, "%")):depend({
-				var_add_rl,
+				var_add_rnd,
 				true
 			})
-			local var_add_rr = var_155_6({
-				var_155_8,
-				"add",
-				"rndr"
-			}, var_155_12:checkbox("\f<z>addrndron"))
 			local var_add_r = var_155_6({
 				var_155_8,
 				"add",
@@ -2514,15 +2509,14 @@ LPH_NO_VIRTUALIZE(function()
 				"add",
 				"rr"
 			}, var_155_12:slider("\f<z>addrndr", 0, 64, 0, true, "%")):depend({
-				var_add_rr,
+				var_add_rnd,
 				true
 			})
 
 			return {
-				rndl = var_add_rl,
+				rnd = var_add_rnd,
 				l = var_add_l,
 				lr = var_add_pl,
-				rndr = var_add_rr,
 				r = var_add_r,
 				rr = var_add_pr
 			}, true
@@ -4535,7 +4529,7 @@ LPH_JIT_MAX(function()
 				local var_add_0 = var_221_3.des > 0
 				local var_add_1 = var_add_0 and var_221_1.cur.add.r or var_221_1.cur.add.l
 
-				if var_add_0 and var_221_1.cur.add.rndr or not var_add_0 and var_221_1.cur.add.rndl then
+				if var_221_1.cur.add.rnd then
 					local var_add_2 = var_add_0 and var_221_1.cur.add.rr or var_221_1.cur.add.lr
 
 					if var_add_2 and var_add_2 > 0 then
