@@ -2345,7 +2345,7 @@ LPH_NO_VIRTUALIZE(function()
 			}, nil, false),
 			general = {
 				var_155_4.header(var_155_5.angles, "General"),
-				mode = var_155_5.angles:combobox("Anti-aim operator", {
+				mode = var_155_5.other:combobox("Anti-aim operator", {
 					"gamesense",
 					"endlessgrace"
 				}),
@@ -3118,6 +3118,11 @@ LPH_NO_VIRTUALIZE(function()
 		})
 	end)
 
+	var_0_127.antiaim.general.mode:depend({
+		var_0_128.selector,
+		"Home"
+	})
+
 	var_155_21 = nil
 
 	do
@@ -3522,12 +3527,51 @@ LPH_NO_VIRTUALIZE(function()
 		end
 	end
 
+	local var_op_cache = {}
+
+	local function var_op_of(arg_op_0)
+		local var_op_0 = var_0_88.configs[arg_op_0]
+
+		if not var_op_0 then
+			return nil
+		end
+
+		local var_op_1 = var_op_cache[arg_op_0]
+
+		if var_op_1 and var_op_1.blob == var_op_0 then
+			return var_op_1.op
+		end
+
+		local var_op_2
+
+		var_0_61(function()
+			local var_op_3, var_op_4, var_op_5 = var_198_1.eval(var_op_0)
+
+			if var_0_24(var_op_5) == "table" and var_op_5.antiaim and var_op_5.antiaim.general then
+				var_op_2 = var_op_5.antiaim.general.mode
+			end
+		end)
+
+		var_op_cache[arg_op_0] = {
+			blob = var_op_0,
+			op = var_op_2
+		}
+
+		return var_op_2
+	end
+
 	local function var_198_7(arg_208_0)
 		if arg_208_0 ~= true then
 			var_0_129.list = {}
 
+			local var_op_cur = var_0_127.antiaim.general.mode.value
+
 			for iter_208_0 in var_0_11, var_0_88.configs do
-				var_0_129.list[#var_0_129.list + 1] = iter_208_0
+				local var_208_op = var_op_of(iter_208_0) or "gamesense"
+
+				if var_208_op == var_op_cur then
+					var_0_129.list[#var_0_129.list + 1] = iter_208_0
+				end
 			end
 
 			var_0_30.sort(var_0_129.list)
@@ -3578,6 +3622,9 @@ LPH_NO_VIRTUALIZE(function()
 	end
 
 	var_198_7()
+	var_0_127.antiaim.general.mode:set_callback(function()
+		var_198_7()
+	end)
 	var_198_0.list:set_callback(function()
 		var_198_7(true)
 	end)
