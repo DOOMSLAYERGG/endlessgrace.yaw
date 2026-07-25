@@ -2227,20 +2227,28 @@ LPH_NO_VIRTUALIZE(function()
 				}, true
 			end),
 			dynhc = var_155_4.feature(var_155_5.angles:checkbox("Dynamic hitchance"), function()
-				return {
-					tab = var_155_5.angles:combobox("\f<p>Weapon", {
-						"Global",
-						"Scout",
-						"AWP",
-						"Auto",
-						"Pistols",
-						"Heavy pistols",
-						"SMGs",
-						"Rifles",
-						"Shotguns",
-						"LMGs"
+				local var_dh_ret = {}
+				var_dh_ret.tab = var_155_5.angles:combobox("\f<p>Weapon", {
+					"Global", "Scout", "AWP", "Auto", "Pistols",
+					"Heavy pistols", "SMGs", "Rifles", "Shotguns", "LMGs"
+				})
+				local var_dh_list = {
+					"Global", "Scout", "AWP", "Auto", "Pistols",
+					"Heavy pistols", "SMGs", "Rifles", "Shotguns", "LMGs"
+				}
+				for iter_dh_0, iter_dh_1 in var_0_9(var_dh_list) do
+					local var_dh_id = var_0_32.lower(var_0_32.gsub(iter_dh_1, " ", "_"))
+					if iter_dh_1 ~= "Global" then
+						var_dh_ret[var_dh_id .. "_on"] = var_155_5.angles:checkbox(var_0_32.format("\f<p>Enable %s", iter_dh_1))
+					end
+					var_dh_ret[var_dh_id .. "_mode"] = var_155_5.angles:combobox(var_0_32.format("\f<p>%s curve", iter_dh_1), {
+						"Farther = lower",
+						"Farther = higher"
 					})
-				}, true
+					var_dh_ret[var_dh_id .. "_close"] = var_155_5.angles:slider(var_0_32.format("\f<p>%s close HC", iter_dh_1), 1, 100, 55, true, "%")
+					var_dh_ret[var_dh_id .. "_far"] = var_155_5.angles:slider(var_0_32.format("\f<p>%s far HC", iter_dh_1), 1, 100, 33, true, "%")
+				end
+				return var_dh_ret, true
 			end),
 			recharge = var_155_5.angles:checkbox("Allow force recharge"),
 			resolver = var_155_4.private(var_155_5.angles:checkbox("Jitter resolver")),
@@ -2679,6 +2687,29 @@ LPH_NO_VIRTUALIZE(function()
 		end
 	end
 
+	do
+		local var_dh_list = {
+			"Global", "Scout", "AWP", "Auto", "Pistols",
+			"Heavy pistols", "SMGs", "Rifles", "Shotguns", "LMGs"
+		}
+		local var_dh_d = var_0_127.rage.dynhc
+		for iter_dh_0, iter_dh_1 in var_0_9(var_dh_list) do
+			local var_dh_id = var_0_32.lower(var_0_32.gsub(iter_dh_1, " ", "_"))
+			local var_dh_en = var_dh_d[var_dh_id .. "_on"]
+			if var_dh_en then
+				var_dh_en:depend({ var_dh_d.tab, iter_dh_1 })
+			end
+			var_dh_d[var_dh_id .. "_mode"]:depend({ var_dh_d.tab, iter_dh_1 })
+			var_dh_d[var_dh_id .. "_close"]:depend({ var_dh_d.tab, iter_dh_1 })
+			var_dh_d[var_dh_id .. "_far"]:depend({ var_dh_d.tab, iter_dh_1 })
+			if var_dh_en then
+				var_dh_d[var_dh_id .. "_mode"]:depend({ var_dh_en })
+				var_dh_d[var_dh_id .. "_close"]:depend({ var_dh_en })
+				var_dh_d[var_dh_id .. "_far"]:depend({ var_dh_en })
+			end
+		end
+	end
+
 	var_0_127.antiaim.state.export:set_callback(function()
 		local var_ei_k = var_155_ei_key()
 
@@ -3032,43 +3063,6 @@ LPH_NO_VIRTUALIZE(function()
 
 	var_155_21 = nil
 
-	local var_dh_wcfg = {}
-	do
-		local var_dh_names = {
-			"Global", "Scout", "AWP", "Auto", "Pistols",
-			"Heavy pistols", "SMGs", "Rifles", "Shotguns", "LMGs"
-		}
-		local var_dh_parent = var_0_127.rage.dynhc
-		for iter_dh_0, iter_dh_1 in var_0_9(var_dh_names) do
-			local var_dh_id = var_0_32.lower(var_0_32.gsub(iter_dh_1, " ", "_"))
-			local var_dh_en
-			if iter_dh_1 ~= "Global" then
-				var_dh_en = var_155_5.angles:checkbox(var_0_32.format("\f<p>Enable %s", iter_dh_1))
-				var_dh_en:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 })
-			end
-			local var_dh_mode = var_155_5.angles:combobox(var_0_32.format("\f<p>%s curve", iter_dh_1), {
-				"Farther = lower",
-				"Farther = higher"
-			})
-			local var_dh_close = var_155_5.angles:slider(var_0_32.format("\f<p>%s close HC", iter_dh_1), 1, 100, 55, true, "%")
-			local var_dh_far = var_155_5.angles:slider(var_0_32.format("\f<p>%s far HC", iter_dh_1), 1, 100, 33, true, "%")
-			if var_dh_en then
-				var_dh_mode:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 }, { var_dh_en })
-				var_dh_close:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 }, { var_dh_en })
-				var_dh_far:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 }, { var_dh_en })
-			else
-				var_dh_mode:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 })
-				var_dh_close:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 })
-				var_dh_far:depend({ var_0_128.selector, "Settings" }, { var_0_128.settings.tab, "Features" }, { var_dh_parent.on }, { var_dh_parent.tab, iter_dh_1 })
-			end
-			var_dh_wcfg[var_dh_id] = {
-				on = var_dh_en,
-				mode = var_dh_mode,
-				close = var_dh_close,
-				far = var_dh_far
-			}
-		end
-	end
 
 	var_0_127.visuals.accent:set_callback(function(arg_195_0)
 		local var_195_0, var_195_1, var_195_2 = var_0_25(arg_195_0.value)
@@ -5859,12 +5853,21 @@ LPH_NO_VIRTUALIZE(function()
 	end
 
 	local function var_dh_get_cfg(arg_dh_cn)
+		local var_dh_d = var_0_127.rage.dynhc
 		local var_dh_g = var_dh_wgroup(arg_dh_cn)
-		local var_dh_s = var_dh_wcfg[var_dh_g]
-		if var_dh_s and var_dh_s.on and var_dh_s.on.value then
-			return var_dh_s
+		local var_dh_en = var_dh_d[var_dh_g .. "_on"]
+		if var_dh_en and var_dh_en.value then
+			return {
+				mode = var_dh_d[var_dh_g .. "_mode"],
+				close = var_dh_d[var_dh_g .. "_close"],
+				far = var_dh_d[var_dh_g .. "_far"]
+			}
 		end
-		return var_dh_wcfg.global
+		return {
+			mode = var_dh_d.global_mode,
+			close = var_dh_d.global_close,
+			far = var_dh_d.global_far
+		}
 	end
 
 	var_282_12.helpers = {
