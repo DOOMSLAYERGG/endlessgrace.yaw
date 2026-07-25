@@ -2481,17 +2481,40 @@ LPH_NO_VIRTUALIZE(function()
 			"add",
 			"on"
 		}, var_155_12:checkbox("Add yaw left / right\f<z>")), function(arg_177_0)
+			local var_add_rnd = var_155_6({
+				var_155_8,
+				"add",
+				"rnd"
+			}, var_155_12:checkbox("\f<p>Randomize\f<z>addrnd"))
+
 			return {
+				rnd = var_add_rnd,
 				l = var_155_6({
 					var_155_8,
 					"add",
 					"l"
 				}, var_155_12:slider("\f<z>addyawl", -60, 60, 0, true, "°")),
+				lr = var_155_6({
+					var_155_8,
+					"add",
+					"lr"
+				}, var_155_12:slider("\f<p>Left random\f<z>addrndl", 0, 100, 0, true, "%")):depend({
+					var_add_rnd,
+					true
+				}),
 				r = var_155_6({
 					var_155_8,
 					"add",
 					"r"
-				}, var_155_12:slider("\f<z>addyawr", -60, 60, 0, true, "°"))
+				}, var_155_12:slider("\f<z>addyawr", -60, 60, 0, true, "°")),
+				rr = var_155_6({
+					var_155_8,
+					"add",
+					"rr"
+				}, var_155_12:slider("\f<p>Right random\f<z>addrndr", 0, 100, 0, true, "%")):depend({
+					var_add_rnd,
+					true
+				})
 			}, true
 		end)
 		var_155_11.mod = var_155_4.feature(var_155_6({
@@ -4499,7 +4522,20 @@ LPH_JIT_MAX(function()
 			end
 
 			if not var_221_4.no_offset and var_221_1.cur.add.on and var_221_3.des and var_221_3.des ~= 0 then
-				var_221_3.mod = var_221_3.mod + (var_221_3.des > 0 and var_221_1.cur.add.r or var_221_1.cur.add.l)
+				local var_add_0 = var_221_3.des > 0
+				local var_add_1 = var_add_0 and var_221_1.cur.add.r or var_221_1.cur.add.l
+
+				if var_221_1.cur.add.rnd then
+					local var_add_2 = var_add_0 and var_221_1.cur.add.rr or var_221_1.cur.add.lr
+
+					if var_add_2 and var_add_2 > 0 then
+						local var_add_3 = var_0_31.floor(60 * var_add_2 * 0.01)
+
+						var_add_1 = var_add_1 + var_0_34.random_int(-var_add_3, var_add_3)
+					end
+				end
+
+				var_221_3.mod = var_221_3.mod + var_add_1
 			end
 		end
 	}
