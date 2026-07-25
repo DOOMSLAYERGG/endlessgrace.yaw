@@ -4021,11 +4021,63 @@ LPH_JIT_MAX(function()
 
 				return var_234_2
 			end,
-			Rotate = function(arg_235_0)
-				return var_0_31.lerp(-arg_235_0.deg, arg_235_0.deg, var_0_38.curtime() * 4 % 1)
+			Rotate = function(arg_235_0, arg_235_1)
+				local var_235_0 = arg_235_0.deg
+
+				if var_235_0 <= 0 then
+					return 0
+				end
+
+				local var_235_1 = arg_235_1._rot or 0
+				local var_235_2 = var_0_31.random(-var_235_0 * 0.6, var_235_0 * 0.6)
+
+				var_235_1 = var_235_1 + var_235_2
+
+				if var_235_1 > var_235_0 then
+					var_235_1 = var_235_0 - (var_235_1 - var_235_0)
+				elseif var_235_1 < -var_235_0 then
+					var_235_1 = -var_235_0 - (var_235_1 + var_235_0)
+				end
+
+				var_235_1 = var_0_31.clamp(var_235_1, -var_235_0, var_235_0)
+				arg_235_1._rot = var_235_1
+
+				return var_235_1
 			end,
-			Random = function(arg_236_0)
-				return var_0_34.random_int(-arg_236_0.deg, arg_236_0.deg)
+			Random = function(arg_236_0, arg_236_1)
+				local var_236_0 = arg_236_0.deg
+
+				if var_236_0 <= 0 then
+					return 0
+				end
+
+				local var_236_1 = arg_236_1._rand_hist
+
+				if not var_236_1 then
+					var_236_1 = {
+						0,
+						0,
+						0
+					}
+					arg_236_1._rand_hist = var_236_1
+				end
+
+				local var_236_2 = var_0_31.max(1, var_236_0 * 0.5)
+				local var_236_3 = 0
+
+				for iter_236_0 = 1, 10 do
+					var_236_3 = var_0_34.random_int(-var_236_0, var_236_0)
+
+					if var_0_31.abs(var_236_3 - var_236_1[1]) >= var_236_2 and var_0_31.abs(var_236_3 - var_236_1[2]) >= var_236_2 and var_0_31.abs(var_236_3 - var_236_1[3]) >= var_236_2 then
+						break
+					end
+				end
+
+				var_236_1[3] = var_236_1[2]
+				var_236_1[2] = var_236_1[1]
+				var_236_1[1] = var_236_3
+
+				return var_236_3
 			end,
 			work = function(arg_237_0)
 				var_221_3.mod = 0
