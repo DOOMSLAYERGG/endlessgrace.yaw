@@ -4187,7 +4187,7 @@ LPH_JIT_MAX(function()
 					return var_221_2.switch and arg_mv_0.deg or -arg_mv_0.deg
 				end
 
-				local var_mv_0 = var_0_31.abs(arg_mv_0.deg)
+				local var_mv_0 = arg_mv_0.deg
 				local var_mv_1 = var_221_2.sent or 0
 
 				if arg_mv_1._mj_sent ~= var_mv_1 then
@@ -4205,16 +4205,10 @@ LPH_JIT_MAX(function()
 						end
 
 						arg_mv_1._mj_left = var_0_34.random_int(1, 4)
-						arg_mv_1._mj_amp = var_mv_0 * var_0_31.random(0.72, 1)
 					end
-
-					local var_mv_4 = arg_mv_1._mj_side and arg_mv_1._mj_amp or -arg_mv_1._mj_amp
-					local var_mv_5 = var_0_31.random(-var_mv_0 * 0.18, var_mv_0 * 0.18)
-
-					arg_mv_1._mj_val = var_0_31.clamp((var_mv_4 or 0) + var_mv_5, -var_mv_0, var_mv_0)
 				end
 
-				return arg_mv_1._mj_val or var_mv_0
+				return arg_mv_1._mj_side and var_mv_0 or -var_mv_0
 			end,
 			work = function(arg_237_0)
 				var_221_3.mod = 0
