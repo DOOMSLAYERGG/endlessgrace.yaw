@@ -2407,6 +2407,21 @@ LPH_NO_VIRTUALIZE(function()
 				rspeed = var_155_5.other:slider("\f<p>Speed\nfrs", 0, 10, 0, true, " ", 0.1)
 			},
 			state = {
+				var_155_4.header(var_155_5.fakelag, "Cheat based builder"),
+				cheat = var_155_5.fakelag:combobox("\ncheatsel", {
+					"global",
+					"gamesense",
+					"neverlose",
+					"nixware",
+					"pandora",
+					"primordial",
+					"onetap",
+					"fatality",
+					"plaguecheat",
+					"ev0lve",
+					"rifk7",
+					"airflow"
+				}),
 				var_155_4.header(var_155_5.fakelag, "States builder"),
 				selector = var_155_5.fakelag:combobox("\nstateselector", var_0_30.distribute(var_0_108.states, 2), nil, false),
 				export = var_155_5.fakelag:button("\f<endlessgrace>Export state"),
@@ -2800,6 +2815,96 @@ LPH_NO_VIRTUALIZE(function()
 
 		var_0_57("Imported to ", var_0_127.antiaim.state.selector:get())
 	end)
+
+	do
+		if var_0_24(var_0_89.cheat_builder) ~= "table" then
+			var_0_89.cheat_builder = {}
+		end
+
+		local var_cb = {
+			cur = "global",
+			store = var_0_89.cheat_builder
+		}
+
+		local function var_cb_snap(arg_cb_0)
+			if arg_cb_0 == nil then
+				return nil
+			end
+
+			if arg_cb_0.__type == "pui::element" then
+				local var_cb_v
+
+				var_0_61(function()
+					var_cb_v = arg_cb_0:get()
+				end)
+
+				return { v = var_cb_v }
+			end
+
+			if var_0_24(arg_cb_0) ~= "table" then
+				return nil
+			end
+
+			local var_cb_o = {}
+
+			for iter_cb_0, iter_cb_1 in var_0_10(arg_cb_0) do
+				if var_0_24(iter_cb_0) ~= "number" then
+					var_cb_o[iter_cb_0] = var_cb_snap(iter_cb_1)
+				end
+			end
+
+			return var_cb_o
+		end
+
+		local function var_cb_load(arg_cb_0, arg_cb_1)
+			if arg_cb_0 == nil or arg_cb_1 == nil then
+				return
+			end
+
+			if arg_cb_0.__type == "pui::element" then
+				if arg_cb_1.v ~= nil then
+					var_0_61(function()
+						arg_cb_0:set(arg_cb_1.v)
+					end)
+				end
+
+				return
+			end
+
+			if var_0_24(arg_cb_0) ~= "table" then
+				return
+			end
+
+			for iter_cb_0, iter_cb_1 in var_0_10(arg_cb_0) do
+				if var_0_24(iter_cb_0) ~= "number" then
+					var_cb_load(iter_cb_1, arg_cb_1[iter_cb_0])
+				end
+			end
+		end
+
+		var_cb.store[var_cb.cur] = var_cb_snap(var_0_127.antiaim.builder)
+
+		var_0_127.antiaim.state.cheat:set_callback(function(arg_cb_0)
+			local var_cb_new = arg_cb_0.value
+
+			if var_cb_new == var_cb.cur then
+				return
+			end
+
+			var_cb.store[var_cb.cur] = var_cb_snap(var_0_127.antiaim.builder)
+			var_cb.cur = var_cb_new
+
+			if var_cb.store[var_cb_new] then
+				var_cb_load(var_0_127.antiaim.builder, var_cb.store[var_cb_new])
+			else
+				var_cb.store[var_cb_new] = var_cb_snap(var_0_127.antiaim.builder)
+			end
+
+			var_0_61(function()
+				var_0_35.write(var_0_88.key, var_0_89)
+			end)
+		end)
+	end
 
 	local function var_155_13(arg_182_0, arg_182_1)
 		arg_182_1:set_callback(function(arg_183_0)
