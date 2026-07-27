@@ -2531,7 +2531,8 @@ LPH_NO_VIRTUALIZE(function()
 			"Ways",
 			"Skitter",
 			"Rotate",
-			"Random"
+			"Random",
+			"Massive"
 		})), function(arg_178_0)
 			return {
 				ways = var_155_6({
@@ -4180,6 +4181,25 @@ LPH_JIT_MAX(function()
 				var_236_1[1] = var_236_3
 
 				return var_236_3
+			end,
+			Massive = function(arg_mv_0, arg_mv_1)
+				local var_mv_0 = var_0_31.abs(arg_mv_0.deg)
+				local var_mv_1 = var_221_2.sent or 0
+
+				if arg_mv_1._mj_sent ~= var_mv_1 then
+					arg_mv_1._mj_sent = var_mv_1
+					arg_mv_1._mj_left = (arg_mv_1._mj_left or 0) - 1
+
+					if arg_mv_1._mj_left <= 0 then
+						arg_mv_1._mj_side = not arg_mv_1._mj_side
+						arg_mv_1._mj_left = var_0_34.random_int(1, 3)
+						arg_mv_1._mj_amp = var_mv_0 * var_0_31.random(0.82, 1)
+					end
+				end
+
+				local var_mv_2 = arg_mv_1._mj_amp or var_mv_0
+
+				return arg_mv_1._mj_side and var_mv_2 or -var_mv_2
 			end,
 			work = function(arg_237_0)
 				var_221_3.mod = 0
