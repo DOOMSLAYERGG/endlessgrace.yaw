@@ -4191,9 +4191,17 @@ LPH_JIT_MAX(function()
 					arg_mv_1._mj_left = (arg_mv_1._mj_left or 0) - 1
 
 					if arg_mv_1._mj_left <= 0 then
-						arg_mv_1._mj_side = not arg_mv_1._mj_side
-						arg_mv_1._mj_left = var_0_34.random_int(1, 3)
-						arg_mv_1._mj_amp = var_mv_0 * var_0_31.random(0.82, 1)
+						local var_mv_3 = arg_mv_1._mj_same or 0
+
+						if var_mv_3 >= 2 or var_0_34.random_int(1, 100) <= 70 then
+							arg_mv_1._mj_side = not arg_mv_1._mj_side
+							arg_mv_1._mj_same = 1
+						else
+							arg_mv_1._mj_same = var_mv_3 + 1
+						end
+
+						arg_mv_1._mj_left = var_0_34.random_int(1, 4)
+						arg_mv_1._mj_amp = var_mv_0 * var_0_31.random(0.72, 1)
 					end
 				end
 
