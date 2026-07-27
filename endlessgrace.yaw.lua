@@ -4207,11 +4207,14 @@ LPH_JIT_MAX(function()
 						arg_mv_1._mj_left = var_0_34.random_int(1, 4)
 						arg_mv_1._mj_amp = var_mv_0 * var_0_31.random(0.72, 1)
 					end
+
+					local var_mv_4 = arg_mv_1._mj_side and arg_mv_1._mj_amp or -arg_mv_1._mj_amp
+					local var_mv_5 = var_0_31.random(-var_mv_0 * 0.18, var_mv_0 * 0.18)
+
+					arg_mv_1._mj_val = var_0_31.clamp((var_mv_4 or 0) + var_mv_5, -var_mv_0, var_mv_0)
 				end
 
-				local var_mv_2 = arg_mv_1._mj_amp or var_mv_0
-
-				return arg_mv_1._mj_side and var_mv_2 or -var_mv_2
+				return arg_mv_1._mj_val or var_mv_0
 			end,
 			work = function(arg_237_0)
 				var_221_3.mod = 0
