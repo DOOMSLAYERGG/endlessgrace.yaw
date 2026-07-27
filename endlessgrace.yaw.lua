@@ -4183,6 +4183,10 @@ LPH_JIT_MAX(function()
 				return var_236_3
 			end,
 			Massive = function(arg_mv_0, arg_mv_1)
+				if var_0_127.antiaim.general.mode.value == "gamesense" then
+					return var_221_2.switch and arg_mv_0.deg or -arg_mv_0.deg
+				end
+
 				local var_mv_0 = var_0_31.abs(arg_mv_0.deg)
 				local var_mv_1 = var_221_2.sent or 0
 
