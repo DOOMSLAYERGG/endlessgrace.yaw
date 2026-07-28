@@ -2294,6 +2294,11 @@ LPH_NO_VIRTUALIZE(function()
 			marker = var_155_5.angles:checkbox("Hitmarker"),
 			var_155_4.space(var_155_5.angles),
 			var_155_4.header(var_155_5.angles, "Other"),
+			trace = var_155_4.feature(var_155_5.angles:checkbox("Trace world"), function()
+				return {
+					time = var_155_5.angles:slider("\f<p>Duration", 1, 10, 3, true, "s")
+				}, true
+			end),
 			aspect = var_155_4.feature(var_155_5.angles:checkbox("Aspect ratio"), function()
 				return {
 					ratio = var_155_5.angles:slider("\f<p>Ratio", 0, 199, 100, true, "", 1, var_155_aspect)
@@ -5254,6 +5259,73 @@ LPH_NO_VIRTUALIZE(function()
 			var_0_3(function()
 				arg_tp_2.ref:override()
 			end)
+		end
+	}
+	var_282_0.trace = {
+		list = {},
+		on_fire = function(arg_tr_0)
+			return function(arg_tr_1)
+				if not var_0_127.visuals.trace.on:get() then
+					return
+				end
+
+				local var_tr_0, var_tr_1, var_tr_2 = var_0_34.eye_position()
+
+				if not var_tr_2 then
+					return
+				end
+
+				local var_tr_3 = var_0_127.visuals.trace.time:get() or 3
+
+				arg_tr_0.list[#arg_tr_0.list + 1] = {
+					sx = var_tr_0,
+					sy = var_tr_1,
+					sz = var_tr_2,
+					ex = arg_tr_1.x,
+					ey = arg_tr_1.y,
+					ez = arg_tr_1.z,
+					die = var_0_38.realtime() + var_tr_3
+				}
+			end
+		end,
+		on_paint = function(arg_tr_2)
+			return function()
+				local var_tr_4 = #arg_tr_2.list
+
+				if var_tr_4 == 0 then
+					return
+				end
+
+				local var_tr_5 = var_0_38.realtime()
+				local var_tr_6 = var_0_91.accent
+
+				for iter_tr_0 = var_tr_4, 1, -1 do
+					local var_tr_7 = arg_tr_2.list[iter_tr_0]
+					local var_tr_8 = var_tr_7.die - var_tr_5
+
+					if var_tr_8 <= 0 then
+						var_0_30.remove(arg_tr_2.list, iter_tr_0)
+					else
+						local var_tr_9 = var_tr_8 < 0.7 and var_tr_8 / 0.7 or 1
+						local var_tr_10, var_tr_11 = var_0_40.world_to_screen(var_tr_7.sx, var_tr_7.sy, var_tr_7.sz)
+						local var_tr_12, var_tr_13 = var_0_40.world_to_screen(var_tr_7.ex, var_tr_7.ey, var_tr_7.ez)
+
+						if var_tr_10 and var_tr_11 and var_tr_12 and var_tr_13 then
+							var_0_40.line(var_tr_10, var_tr_11, var_tr_12, var_tr_13, var_tr_6.r, var_tr_6.g, var_tr_6.b, var_0_31.floor(255 * var_tr_9))
+						end
+					end
+				end
+			end
+		end,
+		on_round = function(arg_tr_3)
+			return function()
+				arg_tr_3.list = {}
+			end
+		end,
+		run = function(arg_tr_4)
+			var_0_78.aim_fire:set(arg_tr_4.on_fire(arg_tr_4))
+			var_0_78.paint_ui:set(arg_tr_4.on_paint(arg_tr_4))
+			var_0_78.round_start:set(arg_tr_4.on_round(arg_tr_4))
 		end
 	}
 
