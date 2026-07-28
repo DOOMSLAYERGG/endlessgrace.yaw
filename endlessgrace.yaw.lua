@@ -5297,7 +5297,6 @@ LPH_NO_VIRTUALIZE(function()
 				end
 
 				local var_tr_5 = var_0_38.realtime()
-				local var_tr_6 = var_0_91.accent
 
 				for iter_tr_0 = var_tr_4, 1, -1 do
 					local var_tr_7 = arg_tr_2.list[iter_tr_0]
@@ -5311,7 +5310,21 @@ LPH_NO_VIRTUALIZE(function()
 						local var_tr_12, var_tr_13 = var_0_40.world_to_screen(var_tr_7.ex, var_tr_7.ey, var_tr_7.ez)
 
 						if var_tr_10 and var_tr_11 and var_tr_12 and var_tr_13 then
-							var_0_40.line(var_tr_10, var_tr_11, var_tr_12, var_tr_13, var_tr_6.r, var_tr_6.g, var_tr_6.b, var_0_31.floor(255 * var_tr_9))
+							local var_tr_14 = var_0_31.floor(255 * var_tr_9)
+							local var_tr_15 = var_0_31.floor(160 * var_tr_9)
+							local var_tr_16 = var_tr_12 - var_tr_10
+							local var_tr_17 = var_tr_13 - var_tr_11
+							local var_tr_18 = var_0_31.sqrt(var_tr_16 * var_tr_16 + var_tr_17 * var_tr_17)
+
+							if var_tr_18 > 0.5 then
+								local var_tr_19 = -var_tr_17 / var_tr_18
+								local var_tr_20 = var_tr_16 / var_tr_18
+
+								var_0_40.line(var_tr_10 + var_tr_19, var_tr_11 + var_tr_20, var_tr_12 + var_tr_19, var_tr_13 + var_tr_20, 255, 255, 255, var_tr_15)
+								var_0_40.line(var_tr_10 - var_tr_19, var_tr_11 - var_tr_20, var_tr_12 - var_tr_19, var_tr_13 - var_tr_20, 255, 255, 255, var_tr_15)
+							end
+
+							var_0_40.line(var_tr_10, var_tr_11, var_tr_12, var_tr_13, 255, 255, 255, var_tr_14)
 						end
 					end
 				end
