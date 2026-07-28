@@ -2262,7 +2262,7 @@ LPH_NO_VIRTUALIZE(function()
 				return var_dh_ret, true
 			end),
 			recharge = var_155_5.angles:checkbox("Allow force recharge"),
-			resolver = var_155_4.private(var_155_5.angles:checkbox("Jitter resolver")),
+			resolver = var_155_4.private(var_155_5.angles:checkbox("endlessreso")),
 			peekfix = var_155_4.private(var_155_5.angles:checkbox("Early defensive"))
 		},
 		visuals = {
@@ -6066,97 +6066,169 @@ LPH_NO_VIRTUALIZE(function()
 
 	var_282_12.resolver = {
 		records = {},
-		gather = function(arg_334_0, arg_334_1)
-			local var_334_0, var_334_1 = var_0_36.get_prop(arg_334_0, "m_angEyeAngles")
-
-			return {
-				time = arg_334_1,
-				pos = var_0_36.get_prop(arg_334_0, "m_flPoseParameter", 11) * 120 - 60,
-				pitch = var_334_0,
-				yaw = var_334_1
+		tickers = {},
+		make_ticker = function(arg_r_ent)
+			local var_r_t = {
+				player = arg_r_ent,
+				last_simtime = 0,
+				last_origin = var_0_50(var_0_36.get_origin(arg_r_ent)),
+				broke_lc = false,
+				in_defensive = false,
+				ticks_left = 0,
+				max_tickbase = var_0_31.abs(var_0_34.get_cvar("sv_maxusrcmdprocessticks") or 16) - 1,
+				tickbase_difference = 0
 			}
+			function var_r_t.update()
+				local var_ru_st = var_0_36.get_prop(var_r_t.player, "m_flSimulationTime")
+				local var_ru_tb = var_0_36.get_prop(var_r_t.player, "m_nTickBase")
+				local var_ru_or = var_0_50(var_0_36.get_origin(var_r_t.player))
+				local var_ru_ticks = var_ru_st and var_0_31.floor(0.5 + var_ru_st / var_0_38.tickinterval()) or 0
+				local var_ru_diff = var_ru_ticks - var_r_t.last_simtime
+
+				if var_ru_tb then
+					if var_ru_diff < 0 then
+						var_r_t.ticks_left = var_0_31.clamp(var_0_31.abs(var_ru_diff), 0, var_r_t.max_tickbase)
+						var_r_t.tickbase_difference = var_ru_tb
+					else
+						if var_r_t.tickbase_difference > 0 then
+							var_r_t.ticks_left = var_0_31.clamp(var_0_31.abs(var_ru_tb - var_r_t.tickbase_difference), 0, var_r_t.max_tickbase)
+						end
+						if var_ru_tb > var_r_t.tickbase_difference then
+							var_r_t.tickbase_difference = var_ru_tb
+						end
+					end
+					var_r_t.in_defensive = var_r_t.ticks_left > 1 and var_r_t.ticks_left < var_r_t.max_tickbase
+				else
+					var_r_t.in_defensive = false
+					var_r_t.ticks_left = 0
+				end
+
+				if var_ru_diff >= 0 and var_ru_or and var_r_t.last_origin then
+					local var_ru_dx = var_ru_or.x - var_r_t.last_origin.x
+					local var_ru_dy = var_ru_or.y - var_r_t.last_origin.y
+					var_r_t.broke_lc = (var_ru_dx * var_ru_dx + var_ru_dy * var_ru_dy) > 4096
+					var_r_t.last_origin = var_ru_or
+				end
+				var_r_t.last_simtime = var_ru_ticks
+			end
+			return var_r_t
+		end,
+		classify = function(arg_r_rec, arg_r_delta)
+			local var_rc_ad = var_0_31.abs(arg_r_delta)
+			if var_rc_ad < 5 then
+				arg_r_rec.static_ticks = (arg_r_rec.static_ticks or 0) + 1
+				if arg_r_rec.static_ticks >= 3 then
+					return "S"
+				end
+			else
+				arg_r_rec.static_ticks = 0
+			end
+			if var_rc_ad > 30 then
+				arg_r_rec.jitter_ticks = (arg_r_rec.jitter_ticks or 0) + 1
+				if arg_r_rec.jitter_ticks >= 2 then
+					return "J"
+				end
+			else
+				arg_r_rec.jitter_ticks = var_0_31.max((arg_r_rec.jitter_ticks or 0) - 1, 0)
+			end
+			return arg_r_rec.aa_state or "S"
 		end,
 		work = function()
-			local var_335_0 = var_282_12.resolver
+			local var_rw_self = var_282_12.resolver
 
 			var_0_34.update_player_list()
 
-			for iter_335_0 = 1, #var_0_114 do
-				local var_335_1 = var_0_114[iter_335_0]
-				local var_335_2 = var_0_36.get_steam64(var_0_114[iter_335_0])
+			for iter_rw_0 = 1, #var_0_114 do
+				local var_rw_ent = var_0_114[iter_rw_0]
+				local var_rw_s64 = var_0_36.get_steam64(var_rw_ent)
 
-				if var_0_36.is_enemy(var_335_1) and var_335_2 then
-					local var_335_3, var_335_4 = var_0_36.get_simtime(var_335_1)
-					local var_335_5, var_335_6 = var_0_22(var_335_3), var_0_22(var_335_4)
-					local var_335_7 = var_335_0.records[var_335_2]
-					local var_335_8 = var_335_0.gather(var_335_1, var_335_5)
-					local var_335_9
+				if var_0_36.is_enemy(var_rw_ent) and var_rw_s64 then
+					local var_rw_as = var_0_36.get_animstate(var_rw_ent)
+					local var_rw_pitch, var_rw_yaw = var_0_36.get_prop(var_rw_ent, "m_angEyeAngles")
+					local var_rw_st = var_0_36.get_prop(var_rw_ent, "m_flSimulationTime")
 
-					var_335_9 = var_335_7 and var_335_7.prev
-
-					if not var_335_7 then
-						var_335_0.records[var_335_2] = {
-							diff = var_335_5 - var_335_6,
-							prev = var_335_8
-						}
-						var_335_7 = var_335_0.records[var_335_2]
-
-						local var_335_10 = var_335_7.prev
-					else
-						var_335_7.diff = var_335_5 - var_335_6
-					end
-
-					local var_335_11
-
-					if var_335_7 ~= nil and var_335_7.diff >= 0 and var_335_7.diff <= 2 and not var_0_36.is_lethal(var_335_1) then
-						local var_335_12 = var_0_36.get_animstate(var_335_1)
-						local var_335_13 = var_0_31.normalize_yaw(var_335_8.yaw - var_335_12.goal_feet_yaw)
-
-						var_335_8.gfy = var_335_12.goal_feet_yaw
-
-						if var_335_13 ~= 0 then
-							var_335_11 = (var_335_13 > 0 and -1 or 1) * var_0_36.get_max_desync(var_335_12)
-
-							if var_335_11 then
-								plist.set(var_335_1, "Force body yaw value", var_335_11)
-							end
+					if var_rw_as and var_rw_yaw and var_rw_st then
+						local var_rw_tk = var_rw_self.tickers[var_rw_s64]
+						if not var_rw_tk then
+							var_rw_tk = var_rw_self.make_ticker(var_rw_ent)
+							var_rw_self.tickers[var_rw_s64] = var_rw_tk
+						else
+							var_rw_tk.player = var_rw_ent
 						end
+						var_0_61(var_rw_tk.update)
+
+						local var_rw_rec = var_rw_self.records[var_rw_s64]
+						local var_rw_stticks = var_0_31.floor(0.5 + var_rw_st / var_0_38.tickinterval())
+
+						if not var_rw_rec then
+							var_rw_rec = {
+								last_yaw = var_rw_yaw,
+								last_simtime = var_rw_stticks,
+								side = 1,
+								jitter_ticks = 0,
+								static_ticks = 0,
+								no_update_ticks = 0,
+								resolve_yaw = 0,
+								last_resolve_yaw = 0,
+								aa_state = "S"
+							}
+							var_rw_self.records[var_rw_s64] = var_rw_rec
+						elseif var_rw_stticks == var_rw_rec.last_simtime then
+							var_rw_rec.no_update_ticks = var_rw_rec.no_update_ticks + 1
+							plist.set(var_rw_ent, "Force body yaw", not var_rw_tk.in_defensive)
+							plist.set(var_rw_ent, "Force body yaw value", var_rw_rec.last_resolve_yaw)
+							plist.set(var_rw_ent, "Correction active", true)
+						else
+							var_rw_rec.no_update_ticks = 0
+							local var_rw_delta = var_0_31.normalize_yaw(var_rw_yaw - var_rw_rec.last_yaw)
+							local var_rw_maxd = var_0_36.get_max_desync(var_rw_as) * 60
+
+							var_rw_rec.aa_state = var_rw_self.classify(var_rw_rec, var_rw_delta)
+
+							if var_0_31.abs(var_rw_delta) > 30 then
+								var_rw_rec.side = var_rw_delta > 0 and 1 or -1
+							end
+							local var_rw_mag = var_0_31.clamp(var_0_31.abs(var_rw_delta) / var_rw_maxd, 0.15, 1)
+							var_rw_rec.resolve_yaw = var_rw_rec.side * var_rw_maxd * var_rw_mag
+							var_rw_rec.last_resolve_yaw = var_rw_rec.resolve_yaw
+
+							plist.set(var_rw_ent, "Force body yaw", not var_rw_tk.in_defensive)
+							plist.set(var_rw_ent, "Force body yaw value", var_rw_rec.resolve_yaw)
+							plist.set(var_rw_ent, "Correction active", true)
+
+							var_rw_rec.last_yaw = var_rw_yaw
+							var_rw_rec.last_simtime = var_rw_stticks
+						end
+					else
+						plist.set(var_rw_ent, "Force body yaw", false)
+						plist.set(var_rw_ent, "Correction active", true)
 					end
-
-					var_335_7.active = var_335_11 ~= nil
-
-					plist.set(var_335_1, "Force body yaw", var_335_11 ~= nil)
-					plist.set(var_335_1, "Correction active", true)
-
-					var_335_7.prev = var_335_8
 				else
-					plist.set(var_335_1, "Correction active", false)
+					plist.set(var_rw_ent, "Correction active", false)
 				end
 			end
 		end,
 		refresh = function()
 			var_0_30.clear(var_282_12.resolver.records)
+			var_0_30.clear(var_282_12.resolver.tickers)
 		end,
 		restore = function()
-			local var_337_0 = var_282_12.resolver
-
-			for iter_337_0 = 1, 64 do
-				plist.set(iter_337_0, "Force body yaw", false)
+			for iter_rr_0 = 1, 64 do
+				plist.set(iter_rr_0, "Force body yaw", false)
 			end
-
-			var_337_0.records = {}
+			var_0_30.clear(var_282_12.resolver.records)
+			var_0_30.clear(var_282_12.resolver.tickers)
 		end,
 		debug = function()
-			local var_338_0 = var_282_12.resolver
-
-			for iter_338_0 = 1, #var_0_114 do
-				local var_338_1 = var_0_114[iter_338_0]
-				local var_338_2 = var_0_36.get_steam64(var_0_114[iter_338_0])
-				local var_338_3 = var_338_0.records[var_338_2]
-				local var_338_4, var_338_5, var_338_6, var_338_7, var_338_8 = var_0_36.get_bounding_box(var_338_1)
-
-				if var_338_3 and var_338_8 > 0 then
-					var_0_99.text(var_0_31.lerp(var_338_4, var_338_6, 0.5), var_338_5 - 18, var_0_91.text, "c", nil, "diff: ", var_338_3.diff)
+			local var_rd_self = var_282_12.resolver
+			for iter_rd_0 = 1, #var_0_114 do
+				local var_rd_ent = var_0_114[iter_rd_0]
+				local var_rd_s64 = var_0_36.get_steam64(var_rd_ent)
+				local var_rd_rec = var_rd_self.records[var_rd_s64]
+				local var_rd_x1, var_rd_y1, var_rd_x2, var_rd_y2, var_rd_a = var_0_36.get_bounding_box(var_rd_ent)
+				if var_rd_rec and var_rd_a and var_rd_a > 0 then
+					var_0_99.text(var_0_31.lerp(var_rd_x1, var_rd_x2, 0.5), var_rd_y1 - 18, var_0_91.text, "c",
+						nil, var_rd_rec.aa_state or "?", ": ", var_0_31.floor(var_rd_rec.resolve_yaw or 0), "\194\176")
 				end
 			end
 		end,
